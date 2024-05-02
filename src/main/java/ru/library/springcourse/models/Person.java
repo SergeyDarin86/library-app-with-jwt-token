@@ -22,17 +22,17 @@ public class Person {
     private int personId;
 
     // на данный момент regex для кириллицы
-    @NotEmpty(message = "FullName should not be empty")
-    @Size(min = 8, max = 100, message = "The FullName should be between 8 and 100 characters")
-    @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "The FullName should have the format: Surname Name Patronymic")
+    @NotEmpty(message = "ФИО не должно быть пустым")
+    @Size(min = 8, max = 100, message = "ФИО должно содержать от 8 до 100 символов")
+    @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "ФИО должно соответсвовать следующему формату: Фамилия Имя Отчество")
     @Column(name = "full_name")
     private String fullName;
 
 
     //TODO: посмотреть как настроить Pattern для числового поля, чтобы вводить только 4 символа для г.р.
-//    @Pattern(regexp = "\\d{4}",message = "The format has to be: (4 numbers)")
-    @Min(value = 1900, message = "Year of Birthday should be more than 1900")
-    @NotNull(message = "Year of Birthday should not be empty")
+
+    @Min(value = 1900, message = "Год рождения должен быть больше 1900г.")
+    @NotNull(message = "Год рождения не должен быть пустым")
     @Column(name = "year_of_birthday")
     private Integer yearOfBirthday;
 

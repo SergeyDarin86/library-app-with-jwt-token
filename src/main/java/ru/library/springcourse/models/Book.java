@@ -14,22 +14,21 @@ public class Book {
     @Column(name = "book_id")
     private int bookId;
 
-    @NotNull(message = "Year of Realise should not be empty")
-    @Min(value = 1, message = "Year of Realise should be more than 0")
-//    @Pattern(regexp = "\\d{4}",message = "The format has to be: (4 numbers)")
+    @NotNull(message = "Год издания книги не должен быть пустым")
+    @Min(value = 1900, message = "Год издания книги должен быть больше 1900")
 
     @Column(name = "year_of_realise")
     private Integer yearOfRealise;
 
-    @NotEmpty(message = "Title of Book should not be empty")
-    @Size(min = 1, max = 100, message = "Title should be between 1 and 100 characters")
-    @Pattern(regexp = "[А-ЯЁ].+", message = "Title book should have format: Apple")
+    @NotEmpty(message = "Название книги не должно быть пустым")
+    @Size(min = 1, max = 100, message = "Название книги должно содержать от 1 до 100 символов")
+    @Pattern(regexp = "[А-ЯЁ].+", message = "Название книги должно начинаться с заглавной буквы: Основы программирования")
     @Column(name = "title")
     private String title;
 
-    @NotEmpty(message = "Author should not be empty")
-    @Size(min = 5, max = 50, message = "Author should be between 5 and 50 characters")
-    @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "The Author should have the format: Surname Name")
+    @NotEmpty(message = "Автор не должен быть пустым")
+    @Size(min = 5, max = 50, message = "Автор должен содержать от 5 до 50 символов")
+    @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "Автор должен быть следующего формата: Фамилия Имя")
     @Column(name = "author")
     private String author;
 
