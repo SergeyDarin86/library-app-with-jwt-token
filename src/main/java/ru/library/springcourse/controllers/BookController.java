@@ -119,7 +119,6 @@ public class BookController {
         return "redirect:/library/books";
     }
 
-    // Работа с List<Book>
     @GetMapping("/books/search")
     public String search(@RequestParam(value = "searchBook", required = false, defaultValue = "") String searchBook,
                          Model books, Model optionalPersonWithBook) {
