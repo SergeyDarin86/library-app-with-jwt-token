@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование книги</title>
+</head>
+<body>
+<!-- здесь мы должны использовать атрибут "th:method" от Thymeleaf-->
+<form th:method="PATCH" th:action="@{/library/books/{bookId}(bookId=${book.getBookId()})}" th:object="${book}">
+    <label for="titleBook">Введите название: </label>
+    <input type="text" th:field="*{title}" id="titleBook">
+    <p style="color: red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title error</p>
+    <br/>
+    <label for="yearRealise">Введите год: </label>
+    <input type="text" th:field="*{yearOfRealise}" id="yearRealise">
+    <p style="color: red" th:if="${#fields.hasErrors('yearOfRealise')}" th:errors="*{yearOfRealise}">YearOfRealise
+        error</p>
+    <br/>
+    <label for="author">Введите автора: </label>
+    <input type="text" th:field="*{author}" id="author">
+    <p style="color: red" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">Author error</p>
+    <br/>
+    <input type="text" th:type="hidden" th:field="*{person.personId}" id="person">
+    <input type="text" th:type="hidden" th:field="*{bookId}" id="bookId">
+    </br>
+
+    <input type="submit" value="Изменить">
+</form>
+</body>
+</html>

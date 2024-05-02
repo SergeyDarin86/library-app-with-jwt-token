@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!--html-форма в Thymeleaf принимает на вход объект, для которого она собственно и создана
+т.е. если мы его (Thymeleaf) используем, то должны внедрить объект в контроллере-->
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Все книги</title>
+</head>
+<body>
+
+<div th:each="book: ${books}">
+    <a th:href="@{/library/books/{id}(id=${book.getBookId()})}" style="color: deepskyblue" th:text="${book.getTitle()
+    + ', ' + book.getYearOfRealise() + ', ' + book.getAuthor()}">book</a>
+
+</div>
+
+<br/>
+<hr/>
+
+<a href="/library/newBook">Добавить книгу</a>
+
+<br/>
+<input type="submit" value="Сортировать">
+
+</body>
+</html>

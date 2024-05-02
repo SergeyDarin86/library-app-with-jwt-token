@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Книга</title>
+</head>
+<body>
+
+<p th:text="${book.getTitle + ', ' + book.getAuthor() + ', ' + book.getYearOfRealise()}">VALUE</p>
+
+<hr/>
+<tr th:if="${optionalPerson.isEmpty()}">
+    <p style="font-weight: bold">Эта книга свободна. Кому назначить её?</p>
+
+    <form th:method="GET" th:action="@{/library/books/{id}/assignPerson(id=${book.getBookId()})}">
+        <label for="person"><b>Выбрать человека:</b></label>
+        <select th:object="${person}" th:field="*{personId}" id="person">
+            <!--    th:value - самый важный атрибут. Он показывает какое значение будет отправляться на сервер
+                при выборе какого-нибудь человека из списка-->
+            <option th:each="person : ${people}" th:value="${person.getPersonId()}"
+                    th:text="${person.getFullName()}"></option>
+        </select>
+
+        <input type="submit" value="Назначить книгу">
+    </form>
+    <!--    -->
+</tr>
+
+<tr th:if="${optionalPerson.isPresent()}">
+    <p style="font-weight: bold" th:text="'Книга сейчас у: ' + ${optionalPerson.get().fullName}"></p>
+    <form th:method="GET" th:action="@{/library/books/{bookId}/makeFree(bookId=${book.getBookId()})}">
+        <input type="submit" value="Освободить книгу">
+    </form>
+
+</tr>
+<hr/>
+
+<form th:action="@{/library/books/{id}/edit(id=${book.getBookId()})}">
+    <input type="submit" value="Редактировать">
+</form>
+
+<form th:method="DELETE" th:action="@{/library/books/{bookId}(bookId=${book.getBookId()})}">
+    <input type="submit" value="Удалить">
+</form>
+
+</body>
+</html>
