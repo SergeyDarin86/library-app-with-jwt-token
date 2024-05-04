@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
-import ru.library.springcourse.repositories.PeopleRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -28,12 +27,9 @@ public class BooksService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final PeopleRepository peopleRepository;
-
     @Autowired
-    public BooksService(BooksRepository booksRepository, PeopleRepository peopleRepository) {
+    public BooksService(BooksRepository booksRepository) {
         this.booksRepository = booksRepository;
-        this.peopleRepository = peopleRepository;
     }
 
     public List<Book> findAllBooksByPerson(Person person) {
@@ -89,7 +85,6 @@ public class BooksService {
     @Transactional
     public void update(int id, Book updatedBook) {
         log.info("Start method update(id, Book) for bookService, id is: {} ", id);
-//        if (!peopleRepository.findPersonByBookId(id).isPresent())
         if (!getBookOwner(id).isPresent())
             updatedBook.setPerson(null);
         updatedBook.setTakenAt(booksRepository.findById(id).get().getTakenAt());
@@ -119,13 +114,11 @@ public class BooksService {
         show(bookId).setPerson(person);
     }
 
-    // Метод, который будет возвращать List<Book>
     public List<Book> getBookListByTitleStartingWith(String title) {
         log.info("Start method getBookListByTitleStartingWith(title) for bookService, title is: {} ", title);
         return booksRepository.findBookByTitleStartingWith(title);
     }
 
-    // Данный метод можно использовать вместо sql-запроса, который был написан вручную в PeopleRepository
     public Optional<Person> getBookOwner(int bookId) {
         return booksRepository.findById(bookId).map(Book::getPerson);
     }
