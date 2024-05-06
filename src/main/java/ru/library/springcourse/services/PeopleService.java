@@ -2,10 +2,13 @@ package ru.library.springcourse.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.PeopleRepository;
+import ru.library.springcourse.securuty.PersonDetails;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,13 @@ public class PeopleService {
 
     public Person show(int personId){
         log.info("Start method show(id) for peopleService, id is: {}", personId);
+
+        // получаем данные из контекста (из потока)
+        // для каждого пользователя будет создан свой поток
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+        System.out.println(personDetails.getPerson());
+
         return peopleRepository.findById(personId).orElse(null);
     }
 

@@ -1,9 +1,11 @@
 package ru.library.springcourse.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+//import jakarta.persistence.*;
+//import jakarta.validation.constraints.*;
 import org.hibernate.annotations.Cascade;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Entity
@@ -43,6 +45,12 @@ public class Person {
     org.hibernate.annotations.CascadeType.REFRESH})
     private List<Book>books;
 
+    @Column(name = "login")
+    private String login;
+
+    @Column(name = "password")
+    private String password;
+
     public List<Book> getBooks() {
         return books;
     }
@@ -79,8 +87,24 @@ public class Person {
         this.yearOfBirthday = yearOfBirthday;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
-        return "{fullName=" + fullName + ", yearOfBirthday=" + yearOfBirthday + "}";
+        return "{fullName=" + fullName + ", yearOfBirthday=" + yearOfBirthday + ", login=" + login + "}";
     }
 }

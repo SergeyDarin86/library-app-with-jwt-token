@@ -1,18 +1,23 @@
 package ru.library.springcourse.services;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+//import jakarta.persistence.EntityManager;
+//import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
+import ru.library.springcourse.securuty.PersonDetails;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +73,11 @@ public class BooksService {
 
     public Book show(int id) {
         log.info("Start method show(id) for bookService, bookId is: {} ", id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+        System.out.println(personDetails.getPerson());
+
         return booksRepository.findById(id).orElse(null);
     }
 

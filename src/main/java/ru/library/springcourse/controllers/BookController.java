@@ -1,6 +1,6 @@
 package ru.library.springcourse.controllers;
 
-import jakarta.validation.Valid;
+//import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +14,7 @@ import ru.library.springcourse.util.BookValidator;
 import ru.library.springcourse.util.PersonValidator;
 
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Optional;
 

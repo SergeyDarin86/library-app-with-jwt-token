@@ -15,4 +15,6 @@ public interface PeopleRepository extends JpaRepository<Person,Integer> {
     @Query("select p from Book b join Person p on p.personId = b.person.personId where b.bookId = :bookId")
     Optional<Person> findPersonByBookId(@Param("bookId") int bookId);
 
+    Optional<Person> findPersonByLogin(String login);
+
 }
