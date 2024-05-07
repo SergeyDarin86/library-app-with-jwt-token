@@ -14,7 +14,7 @@ import java.util.Collections;
 
 // проверяем вводимые логин и пароль на соответствие
 
-@Component
+//@Component
 public class AuthProviderImpl implements AuthenticationProvider {
 
     private final PersonDetailsService personDetailsService;
