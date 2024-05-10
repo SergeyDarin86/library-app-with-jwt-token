@@ -138,10 +138,10 @@ public class BookController {
     }
 
 
-    @GetMapping("/newPerson")
-    public String newPerson(@ModelAttribute Person person) {
-        return "people/newPerson";
-    }
+//    @GetMapping("/newPerson")
+//    public String newPerson(@ModelAttribute Person person) {
+//        return "people/newPerson";
+//    }
 
     //TODO: переделать данный метод под регистрацию с логином и паролем
     // добавить новые поля в форму.
@@ -151,18 +151,18 @@ public class BookController {
     // посмотреть, как будет происходить редактирование пользователя
     // (возможно нужно снова добавлять скрытые поля "login", "password" в форму редактирования)
 
-    @PostMapping()
-    public String create(@ModelAttribute("person") @Valid Person person
-            , BindingResult bindingResult) {
-
-        personValidator.validate(person, bindingResult);
-
-        if (bindingResult.hasErrors())
-            return "people/newPerson";
-
-        peopleService.save(person);
-        return "redirect:/library/people";
-    }
+//    @PostMapping()
+//    public String create(@ModelAttribute("person") @Valid Person person
+//            , BindingResult bindingResult) {
+//
+//        personValidator.validate(person, bindingResult);
+//
+//        if (bindingResult.hasErrors())
+//            return "people/newPerson";
+//
+//        peopleService.save(person);
+//        return "redirect:/library/people";
+//    }
 
     @GetMapping("/people/{id}")
     public String show(@PathVariable("id") int id, Model model, Model modelBook) {

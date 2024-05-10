@@ -28,8 +28,12 @@ public class PersonValidator implements Validator {
 
         if (peopleService.show(person.getFullName()).isPresent()) {
             if (peopleService.show(person.getFullName()).get().getPersonId() != person.getPersonId()) {
-                errors.rejectValue("fullName", "", "Человек с таким именем уже существет");
+                errors.rejectValue("fullName", "", "Человек с таким именем уже существует");
             }
+        }
+
+        if (peopleService.findPersonByUserName(person.getLogin()).isPresent()) {
+            errors.rejectValue("login", "", "Такой пользователь уже существует");
         }
 
     }

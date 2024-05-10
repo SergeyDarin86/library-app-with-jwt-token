@@ -46,9 +46,11 @@ public class Person {
     private List<Book>books;
 
     @Column(name = "login")
+    @NotEmpty(message = "Логин не должен быть пустым")
     private String login;
 
     @Column(name = "password")
+    @NotEmpty(message = "Пароль не должен быть пустым")
     private String password;
 
     public List<Book> getBooks() {

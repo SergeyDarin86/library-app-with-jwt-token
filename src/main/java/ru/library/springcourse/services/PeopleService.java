@@ -70,4 +70,8 @@ public class PeopleService {
         return peopleRepository.findPersonByBookId(bookId);
     }
 
+    public Optional<Person> findPersonByUserName(String login){
+        return peopleRepository.findPersonByLogin(login);
+    }
+
 }
