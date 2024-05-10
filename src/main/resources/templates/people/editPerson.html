@@ -17,6 +17,8 @@
     <p style="color: red" th:if="${#fields.hasErrors('yearOfBirthday')}" th:errors="*{yearOfBirthday}">Year error</p>
     <br/>
     <input type="text" th:type="hidden" th:field="*{personId}" id="personId">
+    <input type="text" th:type="hidden" th:field="*{login}" id="login">
+    <input type="password" th:type="hidden" th:field="*{password}" id="password">
     <br/>
     <input type="submit" value="Изменить">
 </form>
