@@ -22,6 +22,9 @@ public class PersonValidator implements Validator {
         return Person.class.equals(clazz);
     }
 
+    //В логике данного приложения не может быть двух пользователей
+    // с одинаковыми ФИО и логином (именем_пользователя)
+
     @Override
     public void validate(Object target, Errors errors) {
         Person person = (Person) target;
@@ -33,7 +36,9 @@ public class PersonValidator implements Validator {
         }
 
         if (peopleService.findPersonByUserName(person.getLogin()).isPresent()) {
-            errors.rejectValue("login", "", "Такой пользователь уже существует");
+            if (peopleService.findPersonByUserName(person.getLogin()).get().getPersonId() != person.getPersonId()) {
+                errors.rejectValue("login", "", "Такой пользователь уже существует");
+            }
         }
 
     }
