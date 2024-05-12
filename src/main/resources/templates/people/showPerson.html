@@ -32,12 +32,12 @@
 
 <br/>
 
-<form th:action="@{/logout}">
+<form th:action="@{/logout}" th:method="POST">
     <input type="submit" value="Выйти">
 </form>
 
 <form th:action="@{/library/people}">
-    <input type="submit" value="/Вернуться назад">
+    <input type="submit" value="Вернуться назад">
 </form>
 
 </body>

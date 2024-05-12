@@ -16,7 +16,7 @@ import ru.library.springcourse.services.PersonDetailsService;
 
 // аннотация дает понять Spring, что это конфигурационный класс для Spring Security
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PersonDetailsService personDetailsService;
 
@@ -29,13 +29,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     // конфигурируем авторизацию
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests()
-                .antMatchers("/auth/login","/auth/registration","/error").permitAll()
+        http.authorizeRequests()
+                .antMatchers("/auth/login", "/auth/registration", "/error").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/auth/login")
                 .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/library/books",true)
+                .defaultSuccessUrl("/library/books", true)
                 .failureUrl("/auth/login?error")
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/auth/login");
@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     // даем понять Spring как мы шифруем/ или нет наши пароли
     // без этого бина не запустится программа
     @Bean
-    public PasswordEncoder getPasswordEncoder(){
+    public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
