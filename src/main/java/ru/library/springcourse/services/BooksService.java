@@ -71,6 +71,10 @@ public class BooksService {
 
     }
 
+    public List<Book> sortedBooks() {
+        return booksRepository.findAll(Sort.by("yearOfRealise"));
+    }
+
     public Book show(int id) {
         log.info("Start method show(id) for bookService, bookId is: {} ", id);
 

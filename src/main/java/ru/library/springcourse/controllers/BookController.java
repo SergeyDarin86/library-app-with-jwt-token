@@ -52,6 +52,13 @@ public class BookController {
         return "books/books";
     }
 
+    // ендпоинт для кнопки сортировки
+    @GetMapping("/sortedByYear")
+    public String sortedBooks(Model model, @RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear) {
+        model.addAttribute("books", booksService.sortedBooks());
+        return "books/books";
+    }
+
     @GetMapping("/newBook")
     public String newBook(@ModelAttribute Book book) {
         return "books/newBook";

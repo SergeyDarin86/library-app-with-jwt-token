@@ -20,6 +20,11 @@
 <a href="/library/newBook">Добавить книгу</a>
 
 <br/>
+<form th:action="@{/library/sortedByYear}">
+    <input type="submit" value="Сортировать">
+</form>
+
+<br/>
 <form th:action="@{/library/people}">
     <input type="submit" value="Все читатели">
 </form>
