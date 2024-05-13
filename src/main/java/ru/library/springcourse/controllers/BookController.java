@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
+import ru.library.springcourse.services.AdminService;
 import ru.library.springcourse.services.BooksService;
 import ru.library.springcourse.services.PeopleService;
 import ru.library.springcourse.util.BookValidator;
@@ -30,12 +31,21 @@ public class BookController {
 
     private final BooksService booksService;
 
+    private final AdminService adminService;
+
     @Autowired
-    public BookController(PersonValidator personValidator, BookValidator bookValidator, PeopleService peopleService, BooksService booksService) {
+    public BookController(PersonValidator personValidator, BookValidator bookValidator, PeopleService peopleService, BooksService booksService, AdminService adminService) {
         this.personValidator = personValidator;
         this.bookValidator = bookValidator;
         this.peopleService = peopleService;
         this.booksService = booksService;
+        this.adminService = adminService;
+    }
+
+    @GetMapping("/admin")
+    public String adminPage(){
+        adminService.doAdmin();
+        return "/people/adminPage";
     }
 
     @GetMapping("/people")

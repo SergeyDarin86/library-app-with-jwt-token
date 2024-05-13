@@ -18,7 +18,7 @@ public class Book {
     private int bookId;
 
     @NotNull(message = "Год издания книги обязателен для заполнения")
-    @Min(value = 1900, message = "Год издания книги должен быть больше 1900")
+    @Min(value = 1700, message = "Год издания книги должен быть больше 1900")
 
     @Column(name = "year_of_realise")
     private Integer yearOfRealise;

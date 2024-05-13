@@ -53,6 +53,17 @@ public class Person {
     @NotEmpty(message = "Пароль не должен быть пустым")
     private String password;
 
+    @Column(name = "role")
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public List<Book> getBooks() {
         return books;
     }
@@ -107,6 +118,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return "{fullName=" + fullName + ", yearOfBirthday=" + yearOfBirthday + ", login=" + login + "}";
+        return "{fullName=" + fullName + ", yearOfBirthday=" + yearOfBirthday + ", login=" + login + ", role=" + role +"}";
     }
 }

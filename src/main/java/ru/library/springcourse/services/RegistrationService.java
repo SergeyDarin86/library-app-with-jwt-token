@@ -23,6 +23,7 @@ public class RegistrationService {
     @Transactional
     public void register(Person person) {
         log.info("Start method register(person) for RegistrationService, person is: {}", person);
+        person.setRole("ROLE_USER");
         person.setPassword(passwordEncoder.encode(person.getPassword()));
         peopleRepository.save(person);
     }

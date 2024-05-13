@@ -1,10 +1,12 @@
 package ru.library.springcourse.securuty;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.library.springcourse.models.Person;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author Sergey D.
@@ -22,9 +24,10 @@ public class PersonDetails implements UserDetails {
         this.person = person;
     }
 
+    // возвращаем роль человека или список действий, которые он может совершать
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;    //получаем роли, которые есть у пользователя (реализуем позже)
+        return Collections.singletonList(new SimpleGrantedAuthority(person.getRole()));    //получаем роли, которые есть у пользователя (реализуем позже)
     }
 
     @Override
