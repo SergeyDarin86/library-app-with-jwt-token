@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.library.springcourse</groupId>
-	<artifactId>library-app-with-security</artifactId>
+	<artifactId>library-app-with-jwt-token</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>library-app-with-security</name>
-	<description>Library project with Spring Boot using Security</description>
+	<name>library-app-with-jwt-token</name>
+	<description>Library project with Spring Boot using jwt-token</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
