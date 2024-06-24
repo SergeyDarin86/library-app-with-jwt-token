@@ -1,11 +1,13 @@
 package ru.library.springcourse.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.PeopleRepository;
 import ru.library.springcourse.securuty.PersonDetails;
@@ -21,8 +23,9 @@ public class PeopleService {
     private final PeopleRepository peopleRepository;
 
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository) {
+    public PeopleService(PeopleRepository peopleRepository, ModelMapper modelMapper) {
         this.peopleRepository = peopleRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<Person> allPeople(){
@@ -72,6 +75,12 @@ public class PeopleService {
 
     public Optional<Person> findPersonByUserName(String login){
         return peopleRepository.findPersonByLogin(login);
+    }
+
+    private final ModelMapper modelMapper;
+
+    public Person convertToPersonFromDTO(PersonDTO personDTO){
+        return modelMapper.map(personDTO, Person.class);
     }
 
 }
