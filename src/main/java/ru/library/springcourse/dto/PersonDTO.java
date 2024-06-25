@@ -5,7 +5,7 @@ import javax.validation.constraints.*;
 public class PersonDTO {
     @NotEmpty(message = "ФИО обязательно для заполнения")
     @Size(min = 8, max = 100, message = "ФИО должно содержать от 8 до 100 символов")
-    @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "ФИО должно соответсвовать следующему формату: Фамилия Имя Отчество")
+    @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "ФИО должно соответствовать следующему формату: Фамилия Имя Отчество")
     private String fullName;
 
 

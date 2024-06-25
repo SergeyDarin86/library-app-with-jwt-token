@@ -22,17 +22,19 @@ public class PeopleService {
 
     private final PeopleRepository peopleRepository;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
     public PeopleService(PeopleRepository peopleRepository, ModelMapper modelMapper) {
         this.peopleRepository = peopleRepository;
         this.modelMapper = modelMapper;
     }
 
-    public List<Person> allPeople(){
+    public List<Person> allPeople() {
         return peopleRepository.findAll();
     }
 
-    public Person show(int personId){
+    public Person show(int personId) {
         log.info("Start method show(id) for peopleService, id is: {}", personId);
 
         // получаем данные из контекста (из потока)
@@ -44,42 +46,34 @@ public class PeopleService {
         return peopleRepository.findById(personId).orElse(null);
     }
 
-    public Optional<Person> show(String fullName){
+    public Optional<Person> show(String fullName) {
         log.info("Start method show(fullName) for peopleService, fullName is: {}", fullName);
         return peopleRepository.findPersonByFullName(fullName);
     }
 
     @Transactional
-    public void save (Person person){
-        log.info("Start method save(person) for peopleService, person is: {}", person);
-        peopleRepository.save(person);
-    }
-
-    @Transactional
-    public void update(int id, Person updatedPerson){
+    public void update(int id, Person updatedPerson) {
         log.info("Start method update(personId, Person) for peopleService, personId is: {}", id);
         updatedPerson.setPersonId(id);
         peopleRepository.saveAndFlush(updatedPerson);
     }
 
     @Transactional
-    public void delete(int id){
+    public void delete(int id) {
         log.info("Start method delete(id) for peopleService, id is: {}", id);
         peopleRepository.deleteById(id);
     }
 
-    public Optional<Person>findPersonByBookId(Integer bookId){
+    public Optional<Person> findPersonByBookId(Integer bookId) {
         log.info("Start method findPersonByBookId(bookId) for peopleService, bookId is: {}", bookId);
         return peopleRepository.findPersonByBookId(bookId);
     }
 
-    public Optional<Person> findPersonByUserName(String login){
+    public Optional<Person> findPersonByUserName(String login) {
         return peopleRepository.findPersonByLogin(login);
     }
 
-    private final ModelMapper modelMapper;
-
-    public Person convertToPersonFromDTO(PersonDTO personDTO){
+    public Person convertToPersonFromDTO(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
     }
 
