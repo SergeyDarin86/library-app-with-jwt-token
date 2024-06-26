@@ -93,15 +93,21 @@ public class BookController {
         return ResponseEntity.ok(booksService.convertToDTOFromBook(booksService.show(id)));
     }
 
+    //TODO: посмотреть, как улучшить логику в данном методе
+    // возможно нужно вынести логику в сервис
+
     @PatchMapping("/books/{id}")
-    public BookDTO updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult,
+    public ResponseEntity updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult,
                              @PathVariable("id") int id) {
         ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id,booksService.show(id));
-        bookValidator.validate(booksService.convertToBookFromDTO(bookDTO), bindingResult);
+        Book convertedBook = booksService.convertToBookFromDTO(bookDTO);
+        convertedBook.setBookId(id);
+
+        bookValidator.validate(convertedBook, bindingResult);
         ExceptionBuilder.buildErrorMessageForClient(bindingResult);
 
         booksService.update(id, booksService.convertToBookFromDTO(bookDTO));
-        return bookDTO;
+        return ResponseEntity.ok(bookDTO);
     }
 
     //изменить на "PatchMapping"
