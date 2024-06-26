@@ -62,11 +62,6 @@ public class AuthController {
 
     }
 
-    //TODO:
-    //TODO: 1) сделать ExceptionHandler для обработки ошибок (вернуть пользователю)
-    //TODO: 2) сделать везде RestController для работы с библиотекой через Postman
-    //TODO: 3) Сделать отдельные классы PeopleResponse и BookResponse, чтобы не возвращать List в контроллере
-
     private final PeopleService peopleService;
 
     @PostMapping("/registration")

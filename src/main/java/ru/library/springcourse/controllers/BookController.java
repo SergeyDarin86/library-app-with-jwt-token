@@ -26,6 +26,10 @@ import java.util.Optional;
 @RequestMapping("/library")
 public class BookController {
 
+    //TODO:
+    //TODO: 1) сделать ExceptionHandler для обработки ошибок (вернуть пользователю)
+    //TODO: 2) сделать везде RestController для работы с библиотекой через Postman
+    //TODO: 3) Сделать отдельные классы PeopleResponse и BookResponse, чтобы не возвращать List<DTO> в контроллере
     private final PersonValidator personValidator;
 
     private final BookValidator bookValidator;
@@ -59,13 +63,13 @@ public class BookController {
 
     @GetMapping("/books")
     @ResponseBody
-    public List<Book> books(@RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear,
+    public BookResponse books(@RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear,
                             @RequestParam(value = "page", required = false) Integer page,
                             @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks) {
-        return booksService.findAll(page, limitOfBooks, isSortedByYear);
+        return booksService.getAllBooks(page,limitOfBooks,isSortedByYear);
     }
 
-    // ендпоинт для кнопки сортировки
+    // ендпоинт для кнопки сортировки при использовании Thymeleaf
     @GetMapping("/sortedByYear")
     @ResponseBody
     public List<Book> sortedBooks() {
@@ -87,8 +91,8 @@ public class BookController {
     public ResponseEntity showBook(@PathVariable("id") int id) {
         Book book = booksService.show(id);
 
-        if (book == null){
-            ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id,book);
+        if (book == null) {
+            ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, book);
         }
         return ResponseEntity.ok(booksService.convertToDTOFromBook(booksService.show(id)));
     }
@@ -98,8 +102,8 @@ public class BookController {
 
     @PatchMapping("/books/{id}")
     public ResponseEntity updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult,
-                             @PathVariable("id") int id) {
-        ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id,booksService.show(id));
+                                     @PathVariable("id") int id) {
+        ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, booksService.show(id));
         Book convertedBook = booksService.convertToBookFromDTO(bookDTO);
         convertedBook.setBookId(id);
 
@@ -110,11 +114,12 @@ public class BookController {
         return ResponseEntity.ok(bookDTO);
     }
 
-    //изменить на "PatchMapping"
-    @GetMapping("/books/{id}/makeFree")
-    public String makeBookFree(@PathVariable("id") int id) {
+    @PatchMapping("/books/{id}/makeFree")
+    public ResponseEntity makeBookFree(@PathVariable("id") int id) {
+        ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, booksService.show(id));
         booksService.makeBookFree(id);
-        return "redirect:/library/books/{id}";
+
+        return ResponseEntity.ok(booksService.convertToDTOFromBook(booksService.show(id)));
     }
 
     //изменить на "PatchMapping"

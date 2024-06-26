@@ -17,6 +17,7 @@ import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
 import ru.library.springcourse.securuty.PersonDetails;
+import ru.library.springcourse.util.BookResponse;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -151,6 +152,10 @@ public class BooksService {
 
     public BookDTO convertToDTOFromBook(Book book){
         return modelMapper.map(book, BookDTO.class);
+    }
+
+    public BookResponse getAllBooks(Integer page, Integer limitOfBooks, Boolean isSortedByYear){
+        return new BookResponse(findAll(page,limitOfBooks,isSortedByYear).stream().map(this::convertToDTOFromBook).toList());
     }
 
 }
