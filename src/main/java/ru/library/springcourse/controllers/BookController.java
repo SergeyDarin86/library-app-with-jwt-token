@@ -1,6 +1,7 @@
 package ru.library.springcourse.controllers;
 
 //import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import ru.library.springcourse.util.PersonValidator;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -43,15 +45,20 @@ public class BookController {
     }
 
     @GetMapping("/admin")
-    public String adminPage(){
+    public String adminPage() {
         adminService.doAdmin();
         return "/people/adminPage";
     }
 
+    //    @GetMapping("/people")
+//    public String people(Model model) {
+//        model.addAttribute("people", peopleService.allPeople());
+//        return "people/readers";
+//    }
     @GetMapping("/people")
-    public String people(Model model) {
-        model.addAttribute("people", peopleService.allPeople());
-        return "people/readers";
+    @ResponseBody
+    public List<Person> people(Model model) {
+        return peopleService.allPeople();
     }
 
     @GetMapping("/books")

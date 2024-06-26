@@ -3,11 +3,17 @@ package ru.library.springcourse.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.library.springcourse.dto.AuthenticationDTO;
 import ru.library.springcourse.dto.PersonDTO;
-import ru.library.springcourse.models.Person;
 import ru.library.springcourse.securuty.JWTUtil;
+import ru.library.springcourse.securuty.PersonDetails;
 import ru.library.springcourse.services.PeopleService;
 import ru.library.springcourse.services.RegistrationService;
 import ru.library.springcourse.util.ExceptionBuilder;
@@ -16,6 +22,7 @@ import ru.library.springcourse.util.LibraryException;
 import ru.library.springcourse.util.PersonValidator;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -27,24 +34,48 @@ public class AuthController {
 
     private final JWTUtil jwtUtil;
 
+    private final AuthenticationManager authenticationManager;
+
 //    private final ModelMapper modelMapper;
 
     @Autowired
-    public AuthController(PersonValidator personValidator, RegistrationService registrationService, JWTUtil jwtUtil, PeopleService peopleService) {
+    public AuthController(PersonValidator personValidator, RegistrationService registrationService, JWTUtil jwtUtil, AuthenticationManager authenticationManager, PeopleService peopleService) {
         this.personValidator = personValidator;
         this.registrationService = registrationService;
         this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
         this.peopleService = peopleService;
     }
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "auth/login";
-    }
+    /**
+     * Методы, которые относятся к обычной аутентификации
+     */
 
-    @GetMapping("/registration")
-    public String registration(@ModelAttribute("person") Person person) {
-        return "auth/registration";
+//    @GetMapping("/login")
+//    public String loginPage() {
+//        return "auth/login";
+//    }
+//
+//    @GetMapping("/registration")
+//    public String registration(@ModelAttribute("person") Person person) {
+//        return "auth/registration";
+//    }
+
+    @PostMapping("/login")
+    public Map<String, String> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
+        UsernamePasswordAuthenticationToken authInputToken =
+                new UsernamePasswordAuthenticationToken(authenticationDTO.getLogin(),
+                        authenticationDTO.getPassword());
+
+        try {
+            authenticationManager.authenticate(authInputToken);
+        }catch (BadCredentialsException e){
+            return Map.of("message","Incorrect credentials");
+        }
+
+        String token = jwtUtil.generateToken(authenticationDTO.getLogin());
+        return Map.of("jwt-token", token);
+
     }
 
     //TODO: сделать ExceptionHandler для обработки ошибок (вернуть пользователю)
@@ -73,6 +104,15 @@ public class AuthController {
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/showUserInfo")
+    @ResponseBody
+    public String showUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+
+        return personDetails.getUsername();
     }
 
 }

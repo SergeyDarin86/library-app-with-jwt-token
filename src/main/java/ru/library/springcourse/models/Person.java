@@ -2,6 +2,7 @@ package ru.library.springcourse.models;
 
 //import jakarta.persistence.*;
 //import jakarta.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -64,6 +65,7 @@ public class Person {
         this.role = role;
     }
 
+    @JsonIgnore
     public List<Book> getBooks() {
         return books;
     }
