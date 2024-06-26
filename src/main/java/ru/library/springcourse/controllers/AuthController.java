@@ -36,8 +36,6 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
-//    private final ModelMapper modelMapper;
-
     @Autowired
     public AuthController(PersonValidator personValidator, RegistrationService registrationService, JWTUtil jwtUtil, AuthenticationManager authenticationManager, PeopleService peopleService) {
         this.personValidator = personValidator;
@@ -47,20 +45,6 @@ public class AuthController {
         this.peopleService = peopleService;
     }
 
-    /**
-     * Методы, которые относятся к обычной аутентификации
-     */
-
-//    @GetMapping("/login")
-//    public String loginPage() {
-//        return "auth/login";
-//    }
-//
-//    @GetMapping("/registration")
-//    public String registration(@ModelAttribute("person") Person person) {
-//        return "auth/registration";
-//    }
-
     @PostMapping("/login")
     public Map<String, String> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
         UsernamePasswordAuthenticationToken authInputToken =
@@ -69,8 +53,8 @@ public class AuthController {
 
         try {
             authenticationManager.authenticate(authInputToken);
-        }catch (BadCredentialsException e){
-            return Map.of("message","Incorrect credentials");
+        } catch (BadCredentialsException e) {
+            return Map.of("message", "Incorrect credentials");
         }
 
         String token = jwtUtil.generateToken(authenticationDTO.getLogin());
@@ -78,9 +62,11 @@ public class AuthController {
 
     }
 
-    //TODO: сделать ExceptionHandler для обработки ошибок (вернуть пользователю)
-    // сделать везде RestController для работы с библиотекой через Postman
-    // провести рефактор кода
+    //TODO:
+    //TODO: 1) сделать ExceptionHandler для обработки ошибок (вернуть пользователю)
+    //TODO: 2) сделать везде RestController для работы с библиотекой через Postman
+    //TODO: 3) Сделать отдельные классы PeopleResponse и BookResponse, чтобы не возвращать List в контроллере
+
     private final PeopleService peopleService;
 
     @PostMapping("/registration")

@@ -4,6 +4,7 @@ package ru.library.springcourse.services;
 //import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
@@ -29,12 +31,15 @@ public class BooksService {
 
     private final BooksRepository booksRepository;
 
+    private final ModelMapper modelMapper;
+
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    public BooksService(BooksRepository booksRepository) {
+    public BooksService(BooksRepository booksRepository, ModelMapper modelMapper) {
         this.booksRepository = booksRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<Book> findAllBooksByPerson(Person person) {
@@ -101,6 +106,9 @@ public class BooksService {
         log.info("Start method update(id, Book) for bookService, id is: {} ", id);
         if (!getBookOwner(id).isPresent())
             updatedBook.setPerson(null);
+        if (getBookOwner(id).isPresent())
+            updatedBook.setPerson(getBookOwner(id).get());
+
         updatedBook.setTakenAt(booksRepository.findById(id).get().getTakenAt());
         updatedBook.setBookId(id);
         booksRepository.save(updatedBook);
@@ -136,4 +144,13 @@ public class BooksService {
     public Optional<Person> getBookOwner(int bookId) {
         return booksRepository.findById(bookId).map(Book::getPerson);
     }
+
+    public Book convertToBookFromDTO(BookDTO bookDTO){
+        return modelMapper.map(bookDTO, Book.class);
+    }
+
+    public BookDTO convertToDTOFromBook(Book book){
+        return modelMapper.map(book, BookDTO.class);
+    }
+
 }

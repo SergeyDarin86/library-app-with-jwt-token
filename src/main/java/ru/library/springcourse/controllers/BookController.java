@@ -3,17 +3,18 @@ package ru.library.springcourse.controllers;
 //import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.services.AdminService;
 import ru.library.springcourse.services.BooksService;
 import ru.library.springcourse.services.PeopleService;
-import ru.library.springcourse.util.BookValidator;
-import ru.library.springcourse.util.PersonValidator;
+import ru.library.springcourse.util.*;
 
 
 import javax.validation.Valid;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/library")
 public class BookController {
 
@@ -50,78 +51,57 @@ public class BookController {
         return "/people/adminPage";
     }
 
-    //    @GetMapping("/people")
-//    public String people(Model model) {
-//        model.addAttribute("people", peopleService.allPeople());
-//        return "people/readers";
-//    }
     @GetMapping("/people")
     @ResponseBody
-    public List<Person> people(Model model) {
+    public List<Person> people() {
         return peopleService.allPeople();
     }
 
     @GetMapping("/books")
-    public String books(Model model, @RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear,
-                        @RequestParam(value = "page", required = false) Integer page,
-                        @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks) {
-        model.addAttribute("books", booksService.findAll(page, limitOfBooks, isSortedByYear));
-        return "books/books";
+    @ResponseBody
+    public List<Book> books(@RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear,
+                            @RequestParam(value = "page", required = false) Integer page,
+                            @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks) {
+        return booksService.findAll(page, limitOfBooks, isSortedByYear);
     }
 
     // ендпоинт для кнопки сортировки
     @GetMapping("/sortedByYear")
-    public String sortedBooks(Model model, @RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear) {
-        model.addAttribute("books", booksService.sortedBooks());
-        return "books/books";
+    @ResponseBody
+    public List<Book> sortedBooks() {
+        return booksService.sortedBooks();
     }
 
-    @GetMapping("/newBook")
-    public String newBook(@ModelAttribute Book book) {
-        return "books/newBook";
-    }
+    @PostMapping("/newBook")
+    public ResponseEntity newBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult) {
+        bookValidator.validate(booksService.convertToBookFromDTO(bookDTO), bindingResult);
+        ExceptionBuilder.buildErrorMessageForClient(bindingResult);
 
-    @PostMapping("/books")  // new parameter
-    public String createBook(@ModelAttribute("book") @Valid Book book
-            , BindingResult bindingResult) {
+        booksService.save(booksService.convertToBookFromDTO(bookDTO));
 
-        bookValidator.validate(book, bindingResult);
-
-        if (bindingResult.hasErrors())
-            return "books/newBook";
-        booksService.save(book);
-
-        return "redirect:/library/books";
+        return ResponseEntity.ok(bookDTO);
     }
 
     @GetMapping("/books/{id}")
-    public String showBook(@PathVariable("id") int id, Model model, Model optionalModel,
-                           Model modelAddPerson, @ModelAttribute("person") Person person) {
+    @ResponseBody
+    public ResponseEntity showBook(@PathVariable("id") int id) {
+        Book book = booksService.show(id);
 
-        model.addAttribute("book", booksService.show(id));
-        optionalModel.addAttribute("optionalPerson", peopleService.findPersonByBookId(id));
-        modelAddPerson.addAttribute("people", peopleService.allPeople());
-
-        return "books/showBook";
+        if (book == null){
+            ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id,book);
+        }
+        return ResponseEntity.ok(booksService.convertToDTOFromBook(booksService.show(id)));
     }
 
-    @GetMapping("/books/{id}/edit")
-    public String editBook(Model model, @PathVariable("id") int id) {
-        model.addAttribute("book", booksService.show(id));
-        return "books/editBook";
-    }
-
-    // чтобы Spring смог читать значение скрытого поля (_method) необходимо использовать фильтр
     @PatchMapping("/books/{id}")
-    public String updateBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult,
+    public BookDTO updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult,
                              @PathVariable("id") int id) {
-        bookValidator.validate(book, bindingResult);
+        ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id,booksService.show(id));
+        bookValidator.validate(booksService.convertToBookFromDTO(bookDTO), bindingResult);
+        ExceptionBuilder.buildErrorMessageForClient(bindingResult);
 
-        if (bindingResult.hasErrors())
-            return "books/editBook";
-
-        booksService.update(id, book);
-        return "redirect:/library/books";
+        booksService.update(id, booksService.convertToBookFromDTO(bookDTO));
+        return bookDTO;
     }
 
     //изменить на "PatchMapping"
@@ -218,6 +198,24 @@ public class BookController {
     public String deletePerson(@PathVariable("id") int id) {
         peopleService.delete(id);
         return "redirect:/library/people";
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<LibraryErrorResponse> measurementHandlerException(LibraryException e) {
+        LibraryErrorResponse response = new LibraryErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<LibraryErrorResponse> measurementHandlerException(LibraryExceptionNotFound e) {
+        LibraryErrorResponse response = new LibraryErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 }
