@@ -69,12 +69,8 @@ public class PeopleService {
         peopleRepository.deleteById(id);
     }
 
-    public Optional<Person> findPersonByBookId(Integer bookId) {
-        log.info("Start method findPersonByBookId(bookId) for peopleService, bookId is: {}", bookId);
-        return peopleRepository.findPersonByBookId(bookId);
-    }
-
     public Optional<Person> findPersonByUserName(String login) {
+        log.info("Start method findPersonByUserName(login) for peopleService, login is: {}", login);
         return peopleRepository.findPersonByLogin(login);
     }
 

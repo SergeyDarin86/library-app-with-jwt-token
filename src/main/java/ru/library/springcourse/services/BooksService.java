@@ -43,27 +43,8 @@ public class BooksService {
         this.modelMapper = modelMapper;
     }
 
-    public List<Book> findAllBooksByPerson(Person person) {
-        countDaysTheBookIsTakenByPersonNew(person);
-        return booksRepository.findAllByPerson(person);
-    }
-
-    public void countDaysTheBookIsTakenByPersonNew(Person person) {
-        booksRepository.findAllByPerson(person).
-                forEach(book -> book.setIsTakenMoreThan10Days(differenceBetweenTwoDates(countOfDaysForSingleDate(new Date()), countOfDaysForSingleDate(book.getTakenAt())) > 10));
-    }
-
-    //получаем количество дней, прошедших от эпохальной даты
-    public Integer countOfDaysForSingleDate(Date date) {
-        return (int) date.toInstant().getEpochSecond() / 60 / 60 / 24;
-    }
-
-    // высчитываем разницу в днях между текущей датой и датой, когда взяли книгу
-    public Integer differenceBetweenTwoDates(int daysForToday, int daysForTakenBook) {
-        return daysForToday - daysForTakenBook;
-    }
-
     public List<Book> findAll(Integer page, Integer limitOfBooks, Boolean isSortedByYear) {
+        log.info("Start method findAll() for bookService");
 
         if (page != null && limitOfBooks != null && isSortedByYear != null) {
             return booksRepository.findAll(PageRequest.of(page, limitOfBooks, Sort.by("yearOfRealise"))).getContent();
@@ -78,6 +59,7 @@ public class BooksService {
     }
 
     public BookResponse sortedBooksByYear() {
+        log.info("Start method sortedBooksByYear() for bookService");
         return new BookResponse(booksRepository.findAll(Sort.by("yearOfRealise"))
                 .stream().map(this::convertToDTOFromBook).toList());
     }

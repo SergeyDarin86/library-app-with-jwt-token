@@ -1,5 +1,6 @@
 package ru.library.springcourse.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -7,6 +8,7 @@ import org.springframework.validation.Validator;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.services.PeopleService;
 
+@Slf4j
 @Component
 public class PersonValidator implements Validator {
 
@@ -27,6 +29,7 @@ public class PersonValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        log.info("Start method validate(target, errors) for PersonValidator, target is: {}", target);
         Person person = (Person) target;
 
         if (peopleService.show(person.getFullName()).isPresent()) {

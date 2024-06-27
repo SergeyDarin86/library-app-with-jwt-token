@@ -26,9 +26,8 @@ public class BookValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        log.info("Start method validate(target, errors) for BookValidator, target is: {} ", target);
         Book book = (Book) target;
-
-        log.info("Start method validate for Book, bookTitle is: {} ", book.getTitle());
 
         if (booksService.show(book.getTitle()).isPresent()) {
             if (booksService.show(book.getTitle()).get().getBookId() != book.getBookId()){
