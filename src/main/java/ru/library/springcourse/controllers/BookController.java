@@ -56,8 +56,7 @@ public class BookController {
     }
 
     @GetMapping("/people")
-    @ResponseBody
-    public List<Person> people() {
+    public PersonResponse people() {
         return peopleService.allPeople();
     }
 

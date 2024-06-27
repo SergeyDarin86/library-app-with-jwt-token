@@ -11,6 +11,7 @@ import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.PeopleRepository;
 import ru.library.springcourse.securuty.PersonDetails;
+import ru.library.springcourse.util.PersonResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +31,8 @@ public class PeopleService {
         this.modelMapper = modelMapper;
     }
 
-    public List<Person> allPeople() {
-        return peopleRepository.findAll();
+    public PersonResponse allPeople() {
+        return new PersonResponse(peopleRepository.findAll().stream().map(this::convertToDTOFromPerson).toList());
     }
 
     public Person show(int personId) {
@@ -75,6 +76,10 @@ public class PeopleService {
 
     public Person convertToPersonFromDTO(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
+    }
+
+    public PersonDTO convertToDTOFromPerson(Person person) {
+        return modelMapper.map(person, PersonDTO.class);
     }
 
 }
