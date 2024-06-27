@@ -2,6 +2,7 @@ package ru.library.springcourse.services;
 
 //import jakarta.persistence.EntityManager;
 //import jakarta.persistence.PersistenceContext;
+
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.modelmapper.ModelMapper;
@@ -130,16 +131,16 @@ public class BooksService {
         return booksRepository.findById(bookId).map(Book::getPerson);
     }
 
-    public Book convertToBookFromDTO(BookDTO bookDTO){
+    public Book convertToBookFromDTO(BookDTO bookDTO) {
         return modelMapper.map(bookDTO, Book.class);
     }
 
-    public BookDTO convertToDTOFromBook(Book book){
+    public BookDTO convertToDTOFromBook(Book book) {
         return modelMapper.map(book, BookDTO.class);
     }
 
-    public BookResponse getAllBooks(Integer page, Integer limitOfBooks, Boolean isSortedByYear){
-        return new BookResponse(findAll(page,limitOfBooks,isSortedByYear)
+    public BookResponse getAllBooks(Integer page, Integer limitOfBooks, Boolean isSortedByYear) {
+        return new BookResponse(findAll(page, limitOfBooks, isSortedByYear)
                 .stream().map(this::convertToDTOFromBook).toList());
     }
 

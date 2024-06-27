@@ -36,6 +36,8 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
+    private final PeopleService peopleService;
+
     @Autowired
     public AuthController(PersonValidator personValidator, RegistrationService registrationService, JWTUtil jwtUtil, AuthenticationManager authenticationManager, PeopleService peopleService) {
         this.personValidator = personValidator;
@@ -61,8 +63,6 @@ public class AuthController {
         return Map.of("jwt-token", token);
 
     }
-
-    private final PeopleService peopleService;
 
     @PostMapping("/registration")
     public ResponseEntity performRegistration(@RequestBody @Valid PersonDTO personDTO

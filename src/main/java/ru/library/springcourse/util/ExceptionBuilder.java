@@ -54,4 +54,12 @@ public class ExceptionBuilder {
         }
     }
 
+    public static void buildErrorMessageForClientBookAlreadyIsUsed(Book book) {
+        if (book.getPerson() != null) {
+            String errorMsg = " Невозможно назначить книгу - книга уже в пользовании";
+
+            throw new LibraryExceptionNotAcceptable(errorMsg);
+        }
+    }
+
 }

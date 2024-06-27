@@ -111,13 +111,11 @@ public class BookController {
         return ResponseEntity.ok(booksService.convertToDTOFromBook(booksService.show(id)));
     }
 
-    //TODO: попробовать изменить логику - если книга уже занята, то выводить соответствующее сообщение
-    // "Невозможно назначить книгу - книга уже в пользовании"
-
     @PatchMapping("/books/{bookId}/{personId}/assignPerson")
     public ResponseEntity assignPerson(@PathVariable("bookId") int bookId, @PathVariable("personId") int personId) {
         ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(bookId, booksService.show(bookId));
         ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(personId, peopleService.show(personId));
+        ExceptionBuilder.buildErrorMessageForClientBookAlreadyIsUsed(booksService.show(bookId));
 
         booksService.assignPerson(bookId, personId);
         return ResponseEntity.ok(peopleService.convertToDTOFromPerson(booksService.show(bookId).getPerson()));
@@ -186,6 +184,15 @@ public class BookController {
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<LibraryErrorResponse> libraryHandlerException(LibraryExceptionNotAcceptable e) {
+        LibraryErrorResponse response = new LibraryErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
 }
