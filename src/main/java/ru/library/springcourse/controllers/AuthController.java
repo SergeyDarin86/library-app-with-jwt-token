@@ -1,6 +1,8 @@
 package ru.library.springcourse.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,26 +28,19 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthController {
 
-    private final PersonValidator personValidator;
+    PersonValidator personValidator;
 
-    private final RegistrationService registrationService;
+    RegistrationService registrationService;
 
-    private final JWTUtil jwtUtil;
+    JWTUtil jwtUtil;
 
-    private final AuthenticationManager authenticationManager;
+    AuthenticationManager authenticationManager;
 
-    private final PeopleService peopleService;
-
-    @Autowired
-    public AuthController(PersonValidator personValidator, RegistrationService registrationService, JWTUtil jwtUtil, AuthenticationManager authenticationManager, PeopleService peopleService) {
-        this.personValidator = personValidator;
-        this.registrationService = registrationService;
-        this.jwtUtil = jwtUtil;
-        this.authenticationManager = authenticationManager;
-        this.peopleService = peopleService;
-    }
+    PeopleService peopleService;
 
     @PostMapping("/login")
     public Map<String, String> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {

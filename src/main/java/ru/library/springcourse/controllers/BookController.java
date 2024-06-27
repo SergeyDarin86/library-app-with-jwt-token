@@ -1,7 +1,9 @@
 package ru.library.springcourse.controllers;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,26 +22,19 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/library")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookController {
 
-    private final PersonValidator personValidator;
+    PersonValidator personValidator;
 
-    private final BookValidator bookValidator;
+    BookValidator bookValidator;
 
-    private final PeopleService peopleService;
+    PeopleService peopleService;
 
-    private final BooksService booksService;
+    BooksService booksService;
 
-    private final AdminService adminService;
-
-    @Autowired
-    public BookController(PersonValidator personValidator, BookValidator bookValidator, PeopleService peopleService, BooksService booksService, AdminService adminService) {
-        this.personValidator = personValidator;
-        this.bookValidator = bookValidator;
-        this.peopleService = peopleService;
-        this.booksService = booksService;
-        this.adminService = adminService;
-    }
+    AdminService adminService;
 
     @GetMapping("/admin")
     public String adminPage() {
