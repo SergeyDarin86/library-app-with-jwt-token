@@ -1,5 +1,7 @@
 package ru.library.springcourse.dto;
 
+import ru.library.springcourse.models.Person;
+
 import javax.persistence.Column;
 import javax.validation.constraints.*;
 
@@ -18,6 +20,16 @@ public class BookDTO {
     @Size(min = 5, max = 50, message = "Автор должен содержать от 5 до 50 символов")
     @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "Автор должен быть следующего формата: Фамилия Имя")
     private String author;
+
+    private Person person;
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
     public Integer getYearOfRealise() {
         return yearOfRealise;

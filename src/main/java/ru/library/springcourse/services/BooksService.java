@@ -77,8 +77,9 @@ public class BooksService {
 
     }
 
-    public List<Book> sortedBooks() {
-        return booksRepository.findAll(Sort.by("yearOfRealise"));
+    public BookResponse sortedBooksByYear() {
+        return new BookResponse(booksRepository.findAll(Sort.by("yearOfRealise"))
+                .stream().map(this::convertToDTOFromBook).toList());
     }
 
     public Book show(int id) {
@@ -137,9 +138,10 @@ public class BooksService {
         show(bookId).setPerson(person);
     }
 
-    public List<Book> getBookListByTitleStartingWith(String title) {
+    public BookResponse getBookListByTitleStartingWith(String title) {
         log.info("Start method getBookListByTitleStartingWith(title) for bookService, title is: {} ", title);
-        return booksRepository.findBookByTitleStartingWith(title);
+        return new BookResponse(booksRepository.findBookByTitleStartingWith(title)
+                .stream().map(this::convertToDTOFromBook).toList());
     }
 
     public Optional<Person> getBookOwner(int bookId) {
@@ -155,7 +157,8 @@ public class BooksService {
     }
 
     public BookResponse getAllBooks(Integer page, Integer limitOfBooks, Boolean isSortedByYear){
-        return new BookResponse(findAll(page,limitOfBooks,isSortedByYear).stream().map(this::convertToDTOFromBook).toList());
+        return new BookResponse(findAll(page,limitOfBooks,isSortedByYear)
+                .stream().map(this::convertToDTOFromBook).toList());
     }
 
 }

@@ -18,9 +18,6 @@ import ru.library.springcourse.util.*;
 
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/library")
@@ -29,7 +26,7 @@ public class BookController {
     //TODO:
     //TODO: 1) сделать ExceptionHandler для обработки ошибок (вернуть пользователю)
     //TODO: 2) сделать везде RestController для работы с библиотекой через Postman
-    //TODO: 3) Сделать отдельные классы PeopleResponse и BookResponse, чтобы не возвращать List<DTO> в контроллере
+
     private final PersonValidator personValidator;
 
     private final BookValidator bookValidator;
@@ -61,18 +58,16 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    @ResponseBody
     public BookResponse books(@RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear,
-                            @RequestParam(value = "page", required = false) Integer page,
-                            @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks) {
-        return booksService.getAllBooks(page,limitOfBooks,isSortedByYear);
+                              @RequestParam(value = "page", required = false) Integer page,
+                              @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks) {
+        return booksService.getAllBooks(page, limitOfBooks, isSortedByYear);
     }
 
     // ендпоинт для кнопки сортировки при использовании Thymeleaf
     @GetMapping("/sortedByYear")
-    @ResponseBody
-    public List<Book> sortedBooks() {
-        return booksService.sortedBooks();
+    public BookResponse sortedBooksByYear() {
+        return booksService.sortedBooksByYear();
     }
 
     @PostMapping("/newBook")
@@ -121,34 +116,33 @@ public class BookController {
         return ResponseEntity.ok(booksService.convertToDTOFromBook(booksService.show(id)));
     }
 
-    //изменить на "PatchMapping"
-    @GetMapping("/books/{id}/assignPerson")
-    public String assignPerson(@PathVariable("id") int id, @ModelAttribute("person") Person person) {
-        booksService.assignPerson(id, person.getPersonId());
-        return "redirect:/library/books/{id}";
+    //TODO: попробовать изменить логику - если книга уже занята, то выводить соответствующее сообщение
+    // "Невозможно назначить книгу - книга уже в пользовании"
+
+    @PatchMapping("/books/{bookId}/{personId}/assignPerson")
+    public ResponseEntity assignPerson(@PathVariable("bookId") int bookId, @PathVariable("personId") int personId) {
+        ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(bookId, booksService.show(bookId));
+        ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(personId, peopleService.show(personId));
+
+        booksService.assignPerson(bookId, personId);
+        return ResponseEntity.ok(peopleService.convertToDTOFromPerson(booksService.show(bookId).getPerson()));
     }
 
     @DeleteMapping("/books/{id}")
-    public String deleteBook(@PathVariable("id") int id) {
+    public ResponseEntity deleteBook(@PathVariable("id") int id) {
+        ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, booksService.show(id));
+
         booksService.delete(id);
-        return "redirect:/library/books";
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/books/search")
-    public String search(@RequestParam(value = "searchBook", required = false, defaultValue = "") String searchBook,
-                         Model books, Model optionalPersonWithBook) {
+    public ResponseEntity search(@RequestParam(value = "searchBook", required = false, defaultValue = "") String searchBook) {
 
-        if (searchBook != null && !searchBook.equals("")) {
-            books.addAttribute("books", booksService.getBookListByTitleStartingWith(searchBook));
-            if (booksService.getBookListByTitleStartingWith(searchBook) != null)
-                optionalPersonWithBook.addAttribute("peopleService", peopleService);
-        } else {
-            books.addAttribute("books", new ArrayList<Book>() {
-            });
-            optionalPersonWithBook.addAttribute("optionalPersonWithBook", Optional.empty());
-        }
+        ExceptionBuilder.buildErrorMessageForClientTitleNotEntered(searchBook);
+        ExceptionBuilder.buildErrorMessageForClientBookNotFound(booksService.show(searchBook));
+        return ResponseEntity.ok(booksService.getBookListByTitleStartingWith(searchBook));
 
-        return "books/searchBook";
     }
 
 
@@ -211,7 +205,7 @@ public class BookController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<LibraryErrorResponse> measurementHandlerException(LibraryException e) {
+    private ResponseEntity<LibraryErrorResponse> libraryHandlerException(LibraryException e) {
         LibraryErrorResponse response = new LibraryErrorResponse(
                 e.getMessage(),
                 System.currentTimeMillis()
@@ -220,7 +214,7 @@ public class BookController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<LibraryErrorResponse> measurementHandlerException(LibraryExceptionNotFound e) {
+    private ResponseEntity<LibraryErrorResponse> libraryHandlerException(LibraryExceptionNotFound e) {
         LibraryErrorResponse response = new LibraryErrorResponse(
                 e.getMessage(),
                 System.currentTimeMillis()
