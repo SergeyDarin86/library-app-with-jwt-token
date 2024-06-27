@@ -1,14 +1,13 @@
 package ru.library.springcourse.controllers;
 
-//import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.library.springcourse.dto.BookDTO;
+import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.services.AdminService;
@@ -22,10 +21,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/library")
 public class BookController {
-
-    //TODO:
-    //TODO: 1) сделать ExceptionHandler для обработки ошибок (вернуть пользователю)
-    //TODO: 2) сделать везде RestController для работы с библиотекой через Postman
 
     private final PersonValidator personValidator;
 
@@ -145,63 +140,34 @@ public class BookController {
 
     }
 
-
-//    @GetMapping("/newPerson")
-//    public String newPerson(@ModelAttribute Person person) {
-//        return "people/newPerson";
-//    }
-
-    //TODO: переделать данный метод под регистрацию с логином и паролем
-    // добавить новые поля в форму.
-    // Если регистрация прошла успешно, то перенаправлять на страницу "/auth/login"
-    // добавить валидацию на наличие пользователя с вводимым логином(userName) в базе
-    // если такой пользователь уже существует, то делаем return на эту же страницу
-    // посмотреть, как будет происходить редактирование пользователя
-    // (возможно нужно снова добавлять скрытые поля "login", "password" в форму редактирования)
-
-//    @PostMapping()
-//    public String create(@ModelAttribute("person") @Valid Person person
-//            , BindingResult bindingResult) {
-//
-//        personValidator.validate(person, bindingResult);
-//
-//        if (bindingResult.hasErrors())
-//            return "people/newPerson";
-//
-//        peopleService.save(person);
-//        return "redirect:/library/people";
-//    }
-
     @GetMapping("/people/{id}")
-    public String show(@PathVariable("id") int id, Model model, Model modelBook) {
-        model.addAttribute("person", peopleService.show(id));
-        modelBook.addAttribute("books", booksService.findAllBooksByPerson(peopleService.show(id)));
-        return "people/showPerson";
-    }
-
-    @GetMapping("/people/{id}/edit")
-    public String editPerson(Model model, @PathVariable("id") int id) {
-        model.addAttribute("person", peopleService.show(id));
-        return "people/editPerson";
+    public ResponseEntity show(@PathVariable("id") int id) {
+        ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
+        return ResponseEntity.ok(peopleService.show(id));
     }
 
     @PatchMapping("/people/{id}")
-    public String updatePerson(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult,
-                               @PathVariable("id") int id) {
+    public ResponseEntity updatePerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult,
+                                       @PathVariable("id") int id) {
 
-        personValidator.validate(person, bindingResult);
+        ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
+        Person convertedPerson = peopleService.convertToPersonFromDTO(personDTO);
+        convertedPerson.setPersonId(id);
 
-        if (bindingResult.hasErrors())
-            return "people/editPerson";
+        personValidator.validate(convertedPerson, bindingResult);
+        ExceptionBuilder.buildErrorMessageForClient(bindingResult);
 
-        peopleService.update(id, person);
-        return "redirect:/library/people";
+        peopleService.update(id, convertedPerson);
+        personDTO.setPassword(convertedPerson.getPassword());
+        return ResponseEntity.ok(personDTO);
     }
 
     @DeleteMapping("/people/{id}")
-    public String deletePerson(@PathVariable("id") int id) {
+    public ResponseEntity deletePerson(@PathVariable("id") int id) {
+        ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
+
         peopleService.delete(id);
-        return "redirect:/library/people";
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler

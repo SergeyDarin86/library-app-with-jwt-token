@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.library.springcourse.dto.PersonDTO;
@@ -13,7 +14,6 @@ import ru.library.springcourse.repositories.PeopleRepository;
 import ru.library.springcourse.securuty.PersonDetails;
 import ru.library.springcourse.util.PersonResponse;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,10 +25,13 @@ public class PeopleService {
 
     private final ModelMapper modelMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository, ModelMapper modelMapper) {
+    public PeopleService(PeopleRepository peopleRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.peopleRepository = peopleRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public PersonResponse allPeople() {
@@ -56,6 +59,7 @@ public class PeopleService {
     public void update(int id, Person updatedPerson) {
         log.info("Start method update(personId, Person) for peopleService, personId is: {}", id);
         updatedPerson.setPersonId(id);
+        updatedPerson.setPassword(passwordEncoder.encode(updatedPerson.getPassword()));
         peopleRepository.saveAndFlush(updatedPerson);
     }
 
