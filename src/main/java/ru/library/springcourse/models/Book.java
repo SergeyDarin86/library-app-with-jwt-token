@@ -107,7 +107,7 @@ public class Book {
 
     @Override
     public String toString() {
-        return "{ title=" + title + " yearOfRealise= " + yearOfRealise + " author= " + author + "}";
+        return "{ title=" + title + " yearOfRealise= " + yearOfRealise + " author= " + author + " person= " + person + "}";
     }
 
 }
