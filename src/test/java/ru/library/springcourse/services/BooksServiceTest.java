@@ -13,6 +13,7 @@ import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
+import ru.library.springcourse.util.BookResponse;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,13 +30,23 @@ import static org.mockito.Mockito.*;
 class BooksServiceTest extends TestCase {
 
     Book book = new Book();
+
+    Book book2 = new Book();
+
+    BookDTO bookDTO = new BookDTO();
+
+    BookDTO bookDTO2 = new BookDTO();
     Person person = new Person();
 
     BooksService booksService = Mockito.mock(BooksService.class);
 
     BooksRepository booksRepository = Mockito.mock(BooksRepository.class);
 
+    ModelMapper modelMapper = Mockito.mock(ModelMapper.class);
+
     List<Book> bookList = new ArrayList<>();
+
+    List<Book> bookListForStartingWith = new ArrayList<>();
 
     Date date = new Date();
 
@@ -51,6 +62,11 @@ class BooksServiceTest extends TestCase {
         person.setFullName("Иванов Иван Иванович");
         person.setPersonId(1);
         book.setPerson(person);
+
+        book2.setBookId(1);
+        book2.setAuthor("Новый Автор");
+        book2.setTitle("Тест на мышление");
+        book2.setYearOfRealise(2001);
     }
 
     @BeforeEach
@@ -58,15 +74,34 @@ class BooksServiceTest extends TestCase {
         bookList.add(book);
     }
 
-    // тестирование поиска по заголовку книги
+    @BeforeEach
+    void fillingListBookDTOForStartingWith(){
+        bookListForStartingWith.add(book);
+        bookListForStartingWith.add(book2);
+    }
+
+    @BeforeEach
+    void fillingBookDTO(){
+        bookDTO.setYearOfRealise(1999);
+        bookDTO.setAuthor("Тестовый Автор");
+        bookDTO.setTitle("Тестовый заголовок");
+    }
+
+    @BeforeEach
+    void fillingBookDTO2(){
+        bookDTO2.setAuthor("Новый Автор");
+        bookDTO2.setTitle("Тест на мышление");
+        bookDTO2.setYearOfRealise(2001);
+    }
+
     @Test
-    void testShow() {
+    void showByTitle() {
         Mockito.when(booksService.show("Тестовый")).thenReturn(Optional.of(book));
         assertEquals(Optional.of(book), booksService.show("Тестовый"));
     }
 
     @Test
-    void show() {
+    void showById() {
 //        Mockito.when(booksService.show(1)).thenReturn(book);
 //        assertEquals(book, booksService.show(1));
 //        assertEquals(1999, booksService.show(1).getYearOfRealise().intValue());
@@ -146,13 +181,6 @@ class BooksServiceTest extends TestCase {
 
     @Test
     void convertToDTOFromBook() {
-        ModelMapper modelMapper = Mockito.mock(ModelMapper.class);
-
-        BookDTO bookDTO = new BookDTO();
-        bookDTO.setYearOfRealise(1999);
-        bookDTO.setAuthor("Тестовый Автор");
-        bookDTO.setTitle("Тестовый заголовок");
-
         when(booksService.convertToDTOFromBook(book)).thenReturn(bookDTO);
         assertEquals(bookDTO,booksService.convertToDTOFromBook(book));
 
@@ -164,8 +192,6 @@ class BooksServiceTest extends TestCase {
 
     @Test
     void convertToBookFromDTO() {
-        ModelMapper modelMapper = Mockito.mock(ModelMapper.class);
-
         BookDTO bookDTO = new BookDTO();
         bookDTO.setYearOfRealise(1999);
         bookDTO.setAuthor("Тестовый Автор");
@@ -189,5 +215,19 @@ class BooksServiceTest extends TestCase {
         Person expectedPerson = book.getPerson();
 
         assertThat(actualPerson).isEqualTo(expectedPerson);
+    }
+
+    @Test
+    void getBookListByTitleStartingWith() {
+        when(modelMapper.map(book,BookDTO.class)).thenReturn(bookDTO);
+        when(modelMapper.map(book2,BookDTO.class)).thenReturn(bookDTO2);
+        List<BookDTO>bookDTOList = new ArrayList<>();
+        bookDTOList.add(bookDTO);
+        bookDTOList.add(bookDTO2);
+
+        BookResponse bookResponse = new BookResponse(bookDTOList);
+
+        Mockito.when(booksService.getBookListByTitleStartingWith("Тест")).thenReturn(bookResponse);
+        assertEquals(bookResponse, booksService.getBookListByTitleStartingWith("Тест"));
     }
 }

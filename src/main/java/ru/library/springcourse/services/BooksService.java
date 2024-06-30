@@ -80,12 +80,6 @@ public class BooksService {
         return booksRepository.findBookByTitle(title);
     }
 
-    // тестовый метод - не относится к проекту
-//    public Book findBookByTitle(String title) {
-//        log.info("Start method show(title) for bookService, bookTitle is: {} ", title);
-//        return booksRepository.findBookByTitle(title).get();
-//    }
-
     @Transactional
     public void save(Book book) {
         log.info("Start method save(Book) for bookService, book is: {} ", book);
