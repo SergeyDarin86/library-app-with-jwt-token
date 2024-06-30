@@ -54,4 +54,14 @@ public class BookDTO {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    @Override
+    public String toString() {
+        return "BookDTO{" +
+                "yearOfRealise=" + yearOfRealise +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", person=" + person +
+                '}';
+    }
 }

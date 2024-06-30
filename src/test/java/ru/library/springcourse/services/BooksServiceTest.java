@@ -8,6 +8,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.modelmapper.ModelMapper;
+import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
@@ -137,5 +139,55 @@ class BooksServiceTest extends TestCase {
 
         Mockito.when(booksService.findAll(0,1,true)).thenReturn(bookList);
         assertEquals(bookListActual,booksService.findAll(0,1,true));
+
+        Mockito.when(booksRepository.findAll()).thenReturn(bookList);
+        assertEquals(booksRepository.findAll(),booksService.findAll(0,1,true));
+    }
+
+    @Test
+    void convertToDTOFromBook() {
+        ModelMapper modelMapper = Mockito.mock(ModelMapper.class);
+
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setYearOfRealise(1999);
+        bookDTO.setAuthor("Тестовый Автор");
+        bookDTO.setTitle("Тестовый заголовок");
+
+        when(booksService.convertToDTOFromBook(book)).thenReturn(bookDTO);
+        assertEquals(bookDTO,booksService.convertToDTOFromBook(book));
+
+        when(modelMapper.map(book,BookDTO.class)).thenReturn(bookDTO);
+        assertEquals(bookDTO,modelMapper.map(book,BookDTO.class));
+
+        assertEquals(booksService.convertToDTOFromBook(book),modelMapper.map(book,BookDTO.class));
+    }
+
+    @Test
+    void convertToBookFromDTO() {
+        ModelMapper modelMapper = Mockito.mock(ModelMapper.class);
+
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setYearOfRealise(1999);
+        bookDTO.setAuthor("Тестовый Автор");
+        bookDTO.setTitle("Тестовый заголовок");
+
+        when(booksService.convertToBookFromDTO(bookDTO)).thenReturn(book);
+        assertEquals(book,booksService.convertToBookFromDTO(bookDTO));
+
+        when(modelMapper.map(bookDTO, Book.class)).thenReturn(book);
+        assertEquals(book,modelMapper.map(bookDTO,Book.class));
+
+        assertEquals(modelMapper.map(bookDTO, Book.class),booksService.convertToBookFromDTO(bookDTO));
+    }
+
+    @Test
+    void getBookOwner() {
+        Mockito.when(booksService.getBookOwner(1)).thenReturn(Optional.of(person));
+        Person actualPerson = booksService.getBookOwner(1).get();
+
+        Mockito.when(booksRepository.findById(1)).thenReturn(Optional.of(book));
+        Person expectedPerson = book.getPerson();
+
+        assertThat(actualPerson).isEqualTo(expectedPerson);
     }
 }
