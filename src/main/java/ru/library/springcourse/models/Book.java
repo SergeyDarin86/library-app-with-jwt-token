@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "book")
@@ -109,5 +110,19 @@ public class Book {
     public String toString() {
         return "{ title=" + title + " yearOfRealise= " + yearOfRealise + " author= " + author + " person= " + person + "}";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(yearOfRealise, book.yearOfRealise) && Objects.equals(title, book.title) && Objects.equals(author, book.author) && Objects.equals(person, book.person) && Objects.equals(takenAt, book.takenAt) && Objects.equals(isTakenMoreThan10Days, book.isTakenMoreThan10Days);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(yearOfRealise, title, author, person, takenAt, isTakenMoreThan10Days);
+    }
+
 
 }

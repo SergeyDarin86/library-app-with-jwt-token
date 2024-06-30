@@ -4,8 +4,6 @@ import junit.framework.TestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -14,8 +12,9 @@ import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,11 +29,13 @@ class BooksServiceTest extends TestCase {
     Book book = new Book();
     Person person = new Person();
 
-    @Mock
     BooksService booksService = Mockito.mock(BooksService.class);
 
-    @Mock
-    BooksRepository repository = Mockito.mock(BooksRepository.class);
+    BooksRepository booksRepository = Mockito.mock(BooksRepository.class);
+
+    List<Book> bookList = new ArrayList<>();
+
+    Date date = new Date();
 
     @Override
     @BeforeEach
@@ -43,12 +44,17 @@ class BooksServiceTest extends TestCase {
         book.setAuthor("Тестовый Автор");
         book.setTitle("Тестовый заголовок");
         book.setYearOfRealise(1999);
-        book.setTakenAt(new Date());
+        book.setTakenAt(date);
 
         person.setFullName("Иванов Иван Иванович");
+        person.setPersonId(1);
         book.setPerson(person);
     }
 
+    @BeforeEach
+    void fillingList(){
+        bookList.add(book);
+    }
 
     // тестирование поиска по заголовку книги
     @Test
@@ -67,21 +73,21 @@ class BooksServiceTest extends TestCase {
 
         Mockito.when(booksService.show(1)).thenReturn(book);
         Book expectedBook = booksService.show(1);
-        given(repository.findById(1)).willReturn(Optional.of(book));
-        Book actualBook = repository.findById(1).get();
+        given(booksRepository.findById(1)).willReturn(Optional.of(book));
+        Book actualBook = booksRepository.findById(1).get();
         assertThat(actualBook).isEqualTo(expectedBook);
     }
 
     @Test
     void save() {
-        repository.save(book);
-        verify(repository, times(1)).save(book);
+        booksRepository.save(book);
+        verify(booksRepository, times(1)).save(book);
     }
 
     @Test
     void delete() {
-        repository.deleteById(1);
-        verify(repository, times(1)).deleteById(1);
+        booksRepository.deleteById(1);
+        verify(booksRepository, times(1)).deleteById(1);
     }
 
 
@@ -95,5 +101,41 @@ class BooksServiceTest extends TestCase {
 
         assertNull(booksService.show(1).getPerson()); // данный метод предложила Idea вместо (assertEquals)
         assertEquals(null,booksService.show(1).getTakenAt());
+    }
+
+    @Test
+    void assignPerson() {
+        Mockito.when(booksService.show(1)).thenReturn(book);
+        booksService.show(1).setPerson(person);
+        booksService.show(1).setTakenAt(new Date());
+
+        doNothing().when(booksService).assignPerson(1,1);
+
+        assertEquals(person,booksService.show(1).getPerson());
+        assertEquals(book.getTakenAt(),booksService.show(1).getTakenAt());
+    }
+
+    @Test
+    void findAll() {
+        Book bookActual = new Book();
+        bookActual.setBookId(1);
+        bookActual.setAuthor("Тестовый Автор");
+        bookActual.setTitle("Тестовый заголовок");
+        bookActual.setYearOfRealise(1999);
+        bookActual.setTakenAt(date);
+
+        person.setFullName("Иванов Иван Иванович");
+        person.setPersonId(1);
+        bookActual.setPerson(person);
+
+        assertThat(bookList.get(0)).isEqualToComparingFieldByField(bookActual);
+        assertThat(bookList).contains(bookActual);
+
+        List<Book>bookListActual = new ArrayList<>();
+        bookListActual.add(bookActual);
+        assertEquals(bookListActual,bookList);
+
+        Mockito.when(booksService.findAll(0,1,true)).thenReturn(bookList);
+        assertEquals(bookListActual,booksService.findAll(0,1,true));
     }
 }
