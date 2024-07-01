@@ -128,9 +128,17 @@ class PeopleServiceTest extends TestCase {
 
     @Test
     void convertToPersonFromDTO() {
+        when(peopleService.convertToPersonFromDTO(personDTO1)).thenReturn(person1);
+        Person actualPerson = peopleService.convertToPersonFromDTO(personDTO1);
+        verify(peopleService,times(1)).convertToPersonFromDTO(personDTO1);
+        assertEquals(person1,actualPerson);
     }
 
     @Test
     void convertToDTOFromPerson() {
+        when(peopleService.convertToDTOFromPerson(person1)).thenReturn(personDTO1);
+        PersonDTO actualPersonDTO = peopleService.convertToDTOFromPerson(person1);
+        verify(peopleService, times(1)).convertToDTOFromPerson(person1);
+        assertEquals(personDTO1,actualPersonDTO);
     }
 }
