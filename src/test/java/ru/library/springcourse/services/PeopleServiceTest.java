@@ -89,11 +89,8 @@ class PeopleServiceTest extends TestCase {
 
     @Test
     void update() {
-        Person updatedPerson = new Person();
-
+        Person updatedPerson = Mockito.mock(Person.class);
         updatedPerson.setPersonId(1);
-        updatedPerson.setFullName("Дарин Андрей Владимирович");
-        updatedPerson.setYearOfBirthday(1986);
 
         doNothing().when(peopleService).update(1,updatedPerson);
         when(repository.saveAndFlush(updatedPerson)).thenReturn(updatedPerson);
@@ -103,6 +100,8 @@ class PeopleServiceTest extends TestCase {
 
         verify(repository, times(1)).saveAndFlush(updatedPerson);
         verify(peopleService, times(1)).update(1,updatedPerson);
+
+        verify(updatedPerson,times(1)).setPersonId(1);
     }
 
     @Test
