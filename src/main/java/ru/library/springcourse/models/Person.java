@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "person")
@@ -121,5 +122,18 @@ public class Person {
     @Override
     public String toString() {
         return "{fullName=" + fullName + ", yearOfBirthday=" + yearOfBirthday + ", login=" + login + ", role=" + role +"}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return personId == person.personId && Objects.equals(fullName, person.fullName) && Objects.equals(yearOfBirthday, person.yearOfBirthday) && Objects.equals(books, person.books) && Objects.equals(login, person.login) && Objects.equals(password, person.password) && Objects.equals(role, person.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(personId, fullName, yearOfBirthday, books, login, password, role);
     }
 }

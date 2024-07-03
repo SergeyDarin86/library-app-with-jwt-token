@@ -7,6 +7,7 @@ import ru.library.springcourse.models.Person;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * @author Sergey D.
@@ -63,5 +64,18 @@ public class PersonDetails implements UserDetails {
     // нужно, чтобы получать данные аутентифицированного пользователя
     public Person getPerson(){
         return this.person;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PersonDetails that = (PersonDetails) o;
+        return Objects.equals(person, that.person);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(person);
     }
 }
