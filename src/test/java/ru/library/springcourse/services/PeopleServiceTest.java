@@ -45,11 +45,6 @@ class PeopleServiceTest extends TestCase {
         person2.setYearOfBirthday(1987);
     }
 
-    @BeforeEach
-    void fillingDTOs(){
-
-    }
-
     @Test
     void show() {
         when(peopleService.show(1)).thenReturn(person1);

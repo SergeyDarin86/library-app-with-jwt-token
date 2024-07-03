@@ -98,6 +98,7 @@ class BooksServiceTest extends TestCase {
     void showByTitle() {
         Mockito.when(booksService.show("Тестовый")).thenReturn(Optional.of(book));
         assertEquals(Optional.of(book), booksService.show("Тестовый"));
+        verify(booksService, times(1)).show("Тестовый");
     }
 
     @Test
@@ -229,5 +230,35 @@ class BooksServiceTest extends TestCase {
 
         Mockito.when(booksService.getBookListByTitleStartingWith("Тест")).thenReturn(bookResponse);
         assertEquals(bookResponse, booksService.getBookListByTitleStartingWith("Тест"));
+    }
+
+    @Test
+    void update() {
+        Book updatedBook = Mockito.mock(Book.class);
+
+        doNothing().when(booksService).update(1,updatedBook);
+        booksService.update(1,updatedBook);
+        verify(booksService,times(1)).update(1,updatedBook);
+
+        booksRepository.save(updatedBook);
+        when(booksRepository.save(updatedBook)).thenReturn(updatedBook);
+        verify(booksRepository,times(1)).save(updatedBook);
+
+        Date dateToSet = new Date();
+        updatedBook.setTakenAt(dateToSet);
+        verify(updatedBook,times(1)).setTakenAt(dateToSet);
+        doNothing().when(updatedBook).setTakenAt(dateToSet);
+
+        updatedBook.setBookId(1);
+        verify(updatedBook,times(1)).setBookId(1);
+        doNothing().when(updatedBook).setBookId(1);
+
+        updatedBook.setPerson(null);
+        verify(updatedBook,times(1)).setPerson(null);
+        doNothing().when(updatedBook).setPerson(null);
+
+        when(updatedBook.getTakenAt()).thenReturn(dateToSet);
+        assertEquals(dateToSet, updatedBook.getTakenAt());
+
     }
 }
