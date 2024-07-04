@@ -51,7 +51,7 @@ class PersonDetailsServiceTest {
     }
 
     @Test()
-    void loadUserByUsernameShouldThrowException() {
+    void loadUserByUsernameShouldThrowException() throws UsernameNotFoundException{
         when(personDetailsService.loadUserByUsername(anyString())).thenThrow(UsernameNotFoundException.class);
     }
 
