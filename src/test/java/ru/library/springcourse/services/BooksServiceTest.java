@@ -173,11 +173,11 @@ class BooksServiceTest extends TestCase {
         bookListActual.add(bookActual);
         assertEquals(bookListActual,bookList);
 
-        Mockito.when(booksService.findAll(0,1,true)).thenReturn(bookList);
-        assertEquals(bookListActual,booksService.findAll(0,1,true));
+        Mockito.when(booksService.findAll(true,1,0)).thenReturn(bookList);
+        assertEquals(bookListActual,booksService.findAll(true,1,0));
 
         Mockito.when(booksRepository.findAll()).thenReturn(bookList);
-        assertEquals(booksRepository.findAll(),booksService.findAll(0,1,true));
+        assertEquals(booksRepository.findAll(),booksService.findAll(true,1,0));
     }
 
     @Test

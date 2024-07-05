@@ -51,7 +51,7 @@ public class BookController {
     public BookResponse books(@RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear,
                               @RequestParam(value = "page", required = false) Integer page,
                               @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks) {
-        return booksService.getAllBooks(page, limitOfBooks, isSortedByYear);
+        return booksService.getAllBooks(isSortedByYear, page, limitOfBooks);
     }
 
     // ендпоинт для кнопки сортировки при использовании Thymeleaf

@@ -44,7 +44,7 @@ public class BooksService {
         this.modelMapper = modelMapper;
     }
 
-    public List<Book> findAll(Integer page, Integer limitOfBooks, Boolean isSortedByYear) {
+    public List<Book> findAll(Boolean isSortedByYear, Integer page, Integer limitOfBooks) {
         log.info("Start method findAll() for bookService");
 
         if (page != null && limitOfBooks != null && isSortedByYear != null) {
@@ -139,8 +139,8 @@ public class BooksService {
         return modelMapper.map(book, BookDTO.class);
     }
 
-    public BookResponse getAllBooks(Integer page, Integer limitOfBooks, Boolean isSortedByYear) {
-        return new BookResponse(findAll(page, limitOfBooks, isSortedByYear)
+    public BookResponse getAllBooks(Boolean isSortedByYear, Integer page, Integer limitOfBooks) {
+        return new BookResponse(findAll(isSortedByYear, page, limitOfBooks)
                 .stream().map(this::convertToDTOFromBook).toList());
     }
 
