@@ -1,5 +1,6 @@
 package ru.library.springcourse;
 
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import ru.library.springcourse.controllers.BookController;
 import ru.library.springcourse.dto.AuthenticationDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.matchers.JUnitMatchers.containsString;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -55,6 +56,15 @@ class LibraryAppWithSecurityApplicationTests {
 	}
 
 	@Test
+	void adminPage() throws Exception{
+		this.mockMvc.perform(get("/library/admin")
+						.accept(MediaType.APPLICATION_JSON).header("Authorization",this.token))
+				.andExpect(content().string(containsString("/people/adminPage")))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(print());
+	}
+
+	@Test
 	void getAllPeople() throws Exception{
 		this.mockMvc
 				.perform(get("/library/people").accept(MediaType.APPLICATION_JSON)
@@ -63,14 +73,13 @@ class LibraryAppWithSecurityApplicationTests {
 				.andExpect(jsonPath("personDTOList", Matchers.hasSize(13)));
 	}
 
-
 	@Test
-	void adminPage() throws Exception{
-		this.mockMvc.perform(get("/library/admin")
-						.accept(MediaType.APPLICATION_JSON).header("Authorization",this.token))
-				.andExpect(content().string(containsString("/people/adminPage")))
+	void getAllBooks() throws Exception{
+		this.mockMvc
+				.perform(get("/library/books").accept(MediaType.APPLICATION_JSON)
+						.header("Authorization",this.token))
 				.andExpect(status().is2xxSuccessful())
-				.andDo(print());
+				.andExpect(jsonPath("bookDTOList", Matchers.hasSize(12)));
 	}
 
 }
