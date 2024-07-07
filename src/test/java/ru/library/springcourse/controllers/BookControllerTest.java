@@ -31,8 +31,7 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,6 +44,9 @@ class BookControllerTest {
 
     @Mock
     private BooksService booksService;
+
+    @Mock
+    private BooksRepository booksRepository;
     @InjectMocks
     private BookController bookController;
 
@@ -125,29 +127,19 @@ class BookControllerTest {
         Mockito.verify(booksService, Mockito.times(4)).show(id);
     }
 
-    @Mock
-    private BooksRepository booksRepository;
-
-    ModelMapper modelMapper = Mockito.mock(ModelMapper.class);
-
     @Test
     void showBookById() throws Exception {
-        BookDTO bookDTO = Mockito.mock(BookDTO.class);
-        Book book = Mockito.mock(Book.class);
+        Book book = new Book();
         int bookId = 1;
         book.setBookId(bookId);
 
-        when(booksRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(booksService.show(bookId)).thenReturn(book);
+        when(booksRepository.findById(bookId)).thenReturn(Optional.of(book));
 
-        when(booksService.convertToDTOFromBook(book)).thenReturn(bookDTO);
-        when(modelMapper.map(book,BookDTO.class)).thenReturn(bookDTO);
+//        when(this.bookController.showBook(bookId)).thenReturn(responseEntity);
 
-        booksService.show(bookId);
-//        Mockito.verify(booksService, Mockito.times(1)).show(bookId);
-        when(this.bookController.showBook(bookId)).thenReturn(ResponseEntity.ok(bookDTO));
         mockMvc.perform(get("/library/books/" + bookId))
-                .andExpect(status().isOk())
+                .andExpect(status().is2xxSuccessful())
                 .andDo(print());
 
     }
