@@ -1,5 +1,7 @@
 package ru.library.springcourse.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tomcat.jni.Multicast;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,11 +11,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Book;
@@ -21,18 +28,18 @@ import ru.library.springcourse.repositories.BooksRepository;
 import ru.library.springcourse.services.BooksService;
 import ru.library.springcourse.services.PeopleService;
 import ru.library.springcourse.util.BookResponse;
+import ru.library.springcourse.util.BookValidator;
 import ru.library.springcourse.util.LibraryExceptionNotFound;
 import ru.library.springcourse.util.PersonResponse;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.io.StringWriter;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -120,7 +127,7 @@ class BookControllerTest {
         when(booksService.convertToDTOFromBook(book)).thenReturn(bookDTO);
         when(bookController.showBook(id)).thenThrow(new LibraryExceptionNotFound(errorMsg));
 
-        mockMvc.perform(get("/library/books/{id}",1))
+        mockMvc.perform(get("/library/books/{id}", 1))
                 .andExpect(status().is4xxClientError())
                 .andDo(print());
 
@@ -139,6 +146,41 @@ class BookControllerTest {
 //        when(this.bookController.showBook(bookId)).thenReturn(responseEntity);
 
         mockMvc.perform(get("/library/books/" + bookId))
+                .andExpect(status().is2xxSuccessful())
+                .andDo(print());
+
+    }
+
+    @Mock
+    BindingResult bindingResult;
+
+    @Mock
+    BookValidator bookValidator;
+
+    @Test
+    void newBook() throws Exception {
+        Book book = new Book();
+        int bookId = 1;
+        book.setBookId(bookId);
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setTitle("Машина времени");
+        bookDTO.setAuthor("Иван Иванов");
+        bookDTO.setYearOfRealise(1999);
+
+        when(booksService.convertToDTOFromBook(book)).thenReturn(bookDTO);
+        doNothing().when(bookValidator).validate(bookDTO, bindingResult);
+
+
+        doNothing().when(booksService).save(book);
+        when(booksRepository.save(book)).thenReturn(book);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        mockMvc.perform(post("/library/newBook")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(mapper.writeValueAsString(bookDTO))
+                )
+                .andDo(print())
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
 
