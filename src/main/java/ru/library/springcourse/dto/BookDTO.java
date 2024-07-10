@@ -8,7 +8,7 @@ import javax.validation.constraints.*;
 public class BookDTO {
 
     @NotNull(message = "Год издания книги обязателен для заполнения")
-    @Min(value = 1700, message = "Год издания книги должен быть больше 1900")
+    @Min(value = 1700, message = "Год издания книги должен быть больше 1700")
     private Integer yearOfRealise;
 
     @NotEmpty(message = "Название книги обязательно для заполнения")

@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -24,13 +25,12 @@ import org.springframework.web.client.RestTemplate;
 import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Book;
+import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
+import ru.library.springcourse.repositories.PeopleRepository;
 import ru.library.springcourse.services.BooksService;
 import ru.library.springcourse.services.PeopleService;
-import ru.library.springcourse.util.BookResponse;
-import ru.library.springcourse.util.BookValidator;
-import ru.library.springcourse.util.LibraryExceptionNotFound;
-import ru.library.springcourse.util.PersonResponse;
+import ru.library.springcourse.util.*;
 
 import java.io.StringWriter;
 import java.util.*;
@@ -50,6 +50,9 @@ class BookControllerTest {
     private PeopleService peopleService;
 
     @Mock
+    private PeopleRepository peopleRepository;
+
+    @Mock
     private BooksService booksService;
 
     @Mock
@@ -58,6 +61,15 @@ class BookControllerTest {
     private BookController bookController;
 
     private MockMvc mockMvc;
+
+    @Mock
+    BindingResult bindingResult;
+
+    @Mock
+    BookValidator bookValidator;
+
+    @Autowired
+    ObjectMapper mapper;
 
     @BeforeEach
     void setUp() {
@@ -93,7 +105,7 @@ class BookControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
 //                .andExpect(jsonPath("bookDTOList", Matchers.hasSize(0)));
-        //TODO: разобраться почему то не видит Body!?
+        //TODO: разобраться почему-то не видит Body!?
 
 
         Mockito.verify(booksService, Mockito.times(1)).getAllBooks(true, 0, 1);
@@ -143,47 +155,135 @@ class BookControllerTest {
         when(booksService.show(bookId)).thenReturn(book);
         when(booksRepository.findById(bookId)).thenReturn(Optional.of(book));
 
-//        when(this.bookController.showBook(bookId)).thenReturn(responseEntity);
-
         mockMvc.perform(get("/library/books/" + bookId))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
 
     }
 
-    @Mock
-    BindingResult bindingResult;
-
-    @Mock
-    BookValidator bookValidator;
-
     @Test
     void newBook() throws Exception {
-        Book book = new Book();
-        int bookId = 1;
-        book.setBookId(bookId);
         BookDTO bookDTO = new BookDTO();
         bookDTO.setTitle("Машина времени");
         bookDTO.setAuthor("Иван Иванов");
         bookDTO.setYearOfRealise(1999);
 
-        when(booksService.convertToDTOFromBook(book)).thenReturn(bookDTO);
         doNothing().when(bookValidator).validate(bookDTO, bindingResult);
-
-
-        doNothing().when(booksService).save(book);
-        when(booksRepository.save(book)).thenReturn(book);
-
-        ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post("/library/newBook")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(mapper.writeValueAsString(bookDTO))
                 )
-                .andDo(print())
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
 
     }
 
+    @Test
+    void newBookWithThrowException() throws Exception {
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setTitle("Машина времени");
+        bookDTO.setAuthor("Иван Иванов");
+        bookDTO.setYearOfRealise(1600);
+        String errorMsg = "Год издания книги должен быть больше 1700";
+
+        when(bookController.newBook(bookDTO,bindingResult)).thenThrow(new LibraryException(errorMsg));
+
+        mockMvc.perform(post("/library/newBook")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(mapper.writeValueAsString(bookDTO))
+                )
+                .andExpect(status().is4xxClientError())
+                .andDo(print());
+
+    }
+
+    @Test
+    void updateBook() throws Exception{
+//        ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, booksService.show(id));
+//        Book convertedBook = booksService.convertToBookFromDTO(bookDTO);
+//        convertedBook.setBookId(id);
+//
+//        bookValidator.validate(convertedBook, bindingResult);
+//        ExceptionBuilder.buildErrorMessageForClient(bindingResult);
+//
+//        booksService.update(id, booksService.convertToBookFromDTO(bookDTO));
+
+
+//        Book book = new Book();
+//        book.setBookId(1);
+//        BookDTO bookDTO = new BookDTO();
+//        bookDTO.setTitle("Машина времени");
+//        bookDTO.setAuthor("Иван Иванов");
+//        bookDTO.setYearOfRealise(1600);
+//        int bookId = 1;
+//        Book convertedBook = new Book();
+//        convertedBook.setBookId(1);
+//
+//        when(booksService.show(bookId)).thenReturn(book);
+//        when(booksService.convertToDTOFromBook(book)).thenReturn(bookDTO);
+//
+//        when(booksService.convertToBookFromDTO(bookDTO)).thenReturn(convertedBook);
+//
+//        doNothing().when(bookValidator).validate(convertedBook,bindingResult);
+//        doNothing().when(booksService).update(bookId,book);
+//
+//        mockMvc.perform(patch("/library/books/" + bookId)
+//                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                        .content(mapper.writeValueAsString(bookDTO))
+//                )
+//                .andDo(print())
+//                .andExpect(status().is2xxSuccessful())
+//                .andDo(print());
+
+    }
+
+    @Test
+    void showPersonById() throws Exception {
+        Person person = new Person();
+        int personId = 1;
+        person.setPersonId(personId);
+
+        when(peopleService.show(personId)).thenReturn(person);
+        when(peopleRepository.findById(personId)).thenReturn(Optional.of(person));
+
+        mockMvc.perform(get("/library/people/" + personId))
+                .andExpect(status().is2xxSuccessful())
+                .andDo(print());
+    }
+
+    @Test
+    void showPersonByIdWithThrowException() throws Exception {
+        PersonDTO personDTO = Mockito.mock(PersonDTO.class);
+        Person person = Mockito.mock(Person.class);
+        int id = 1;
+        String errorMsg = id + " - Человека с таким id не найдено";
+        when(peopleService.show(id)).thenReturn(person);
+        when(peopleService.convertToDTOFromPerson(person)).thenReturn(personDTO);
+        when(bookController.show(id)).thenThrow(new LibraryExceptionNotFound(errorMsg));
+
+        mockMvc.perform(get("/library/people/{id}", 2))
+                .andExpect(status().is4xxClientError())
+                .andDo(print());
+
+        Mockito.verify(peopleService, Mockito.times(1)).show(id);
+    }
+
+    @Test
+    void testAllPeople() throws Exception {
+        List<PersonDTO> personDTOList = new ArrayList<>();
+        PersonDTO personDTO = new PersonDTO();
+        personDTO.setFullName("Дарин Сергей Владимирович");
+        personDTOList.add(personDTO);
+        PersonResponse personResponse = new PersonResponse(personDTOList);
+
+        when(bookController.people()).thenReturn(personResponse);
+
+        mockMvc.perform(get("/library/people").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andDo(print())
+                .andExpect(jsonPath("personDTOList", Matchers.hasSize(1)));
+
+        Mockito.verify(peopleService, Mockito.times(1)).allPeople();
+    }
 }
