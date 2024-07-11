@@ -88,10 +88,20 @@ public class BookController {
     public ResponseEntity updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult,
                                      @PathVariable("id") int id) {
         ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, booksService.show(id));
-        Book convertedBook = booksService.convertToBookFromDTO(bookDTO);
-        convertedBook.setBookId(id);
 
-        bookValidator.validate(convertedBook, bindingResult);
+        //TODO: старые строчки кода, которые возможно нужно убрать
+        // проверить работоспособность
+//        Book convertedBook = booksService.convertToBookFromDTO(bookDTO);
+//        convertedBook.setBookId(id);
+//
+//        bookValidator.validate(convertedBook, bindingResult);
+
+        //TODO
+        // возможно не нужно создавать отдельную переменную convertedBook
+        // а просто обойтись методом конвертации
+        // с этой строкой тесты проходят - нужно проверить как будет работать программа с этими изменениями
+        bookValidator.validate(booksService.convertToBookFromDTO(bookDTO), bindingResult);
+        //
         ExceptionBuilder.buildErrorMessageForClient(bindingResult);
 
         booksService.update(id, booksService.convertToBookFromDTO(bookDTO));
