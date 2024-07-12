@@ -32,7 +32,7 @@ public class ExceptionBuilder {
 
     public static void buildErrorMessageForClientBookNotFound(Optional<Book>bookOptional) {
         if (bookOptional.isEmpty()) {
-            String errorMsg = "Такой книги не найдено";
+            String errorMsg = "Такой книги не найдено Book not found";
 
             throw new LibraryExceptionNotFound(errorMsg);
         }
@@ -48,7 +48,7 @@ public class ExceptionBuilder {
 
     public static void buildErrorMessageForClientTitleNotEntered(String searchedBook) {
         if (searchedBook == null || searchedBook.equals("")) {
-            String errorMsg = " Введите поисковый запрос";
+            String errorMsg = " Введите поисковый запрос No query";
 
             throw new LibraryExceptionNotFound(errorMsg);
         }

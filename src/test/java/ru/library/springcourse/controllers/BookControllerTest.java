@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
@@ -212,7 +213,6 @@ class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(mapper.writeValueAsString(bookDTO))
                 )
-                .andDo(print())
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
 
@@ -315,7 +315,7 @@ class BookControllerTest {
     void makeBookFreeWithThrowException() {
         int bookId = 1;
 
-        Book book = Mockito.mock(Book.class);
+//        Book book = Mockito.mock(Book.class);
         String errorMsg = bookId + " - Книги с таким id не найдено";
 
         when(booksService.show(bookId)).thenThrow(new LibraryExceptionNotFound(errorMsg));
@@ -345,4 +345,104 @@ class BookControllerTest {
                 .andDo(print());
         verify(booksService, times(1)).assignPerson(bookId, personId);
     }
+
+    @Mock
+    PersonValidator personValidator;
+
+
+//    @Test
+//    @SneakyThrows
+//    void updatePerson() {
+//
+//        Person person= Mockito.mock(Person.class);
+//        person.setPersonId(1);
+//
+////        when(person.getPassword()).thenReturn("user");
+//
+//        PersonDTO personDTO = new PersonDTO();
+//        personDTO.setFullName("Дарин Сергей Владимирович");
+//        personDTO.setYearOfBirthday(1986);
+//        personDTO.setLogin("user");
+//        personDTO.setPassword("user");
+//        int personId = 1;
+//
+//        Person convertedPerson = new Person();
+//        convertedPerson.setPassword("user");
+//
+//        when(peopleService.show(personId)).thenReturn(person);
+//
+//        when(peopleService.convertToPersonFromDTO(personDTO)).thenReturn(person);
+//        doNothing().when(personValidator).validate(person,bindingResult);
+//
+//        doNothing().when(person).setPersonId(personId);
+//        doNothing().when(peopleService).update(personId, person);
+//        when(peopleService.convertToPersonFromDTO(personDTO)).thenReturn(convertedPerson);
+//
+//        personDTO.setPassword(person.getPassword());
+//
+//        mockMvc.perform(patch("/library/people/" + personId)
+//                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                        .content(mapper.writeValueAsString(personDTO))
+//                )
+//                .andDo(print())
+//                .andExpect(status().is2xxSuccessful())
+//                .andDo(print());
+//
+//    }
+
+//    @Test
+    @SneakyThrows
+    void updatePerson() {
+
+        Person person= Mockito.mock(Person.class);
+
+        PersonDTO personDTO = new PersonDTO();
+        personDTO.setFullName("Дарин Сергей Владимирович");
+        personDTO.setYearOfBirthday(1986);
+        personDTO.setLogin("user");
+        personDTO.setPassword("user");
+        int personId = 1;
+
+        Person convertedPerson = new Person();
+        convertedPerson.setPassword("user");
+//        when(convertedPerson.getPassword()).thenReturn("user");
+
+        when(peopleService.show(personId)).thenReturn(person);
+        doNothing().when(personValidator).validate(person,bindingResult);
+        doNothing().when(peopleService).update(personId, person);
+        when(peopleService.convertToPersonFromDTO(personDTO)).thenReturn(convertedPerson);
+//        when(convertedPerson.getPassword()).thenReturn("user");
+
+        String password = person.getPassword();
+        personDTO.setPassword(convertedPerson.getPassword());
+
+        mockMvc.perform(patch("/library/people/" + personId)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(mapper.writeValueAsString(personDTO))
+                )
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful())
+                .andDo(print());
+
+    }
+
+    @Test
+    void searchWithExceptionTitleNotEntered() throws Exception{
+
+        mockMvc.perform(get("/library/books/search")
+                        .param("searchBook", ""))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void searchWithExceptionBookNotFound() throws Exception{
+        String title = "Основы";
+
+        mockMvc.perform(get("/library/books/search")
+                        .param("searchBook", title))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
 }

@@ -153,15 +153,24 @@ public class BookController {
     public ResponseEntity updatePerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult,
                                        @PathVariable("id") int id) {
 
-        ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
-        Person convertedPerson = peopleService.convertToPersonFromDTO(personDTO);
-        convertedPerson.setPersonId(id);
+//        ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
+//        Person convertedPerson = peopleService.convertToPersonFromDTO(personDTO);
+//        convertedPerson.setPersonId(id);
+//
+//        personValidator.validate(convertedPerson, bindingResult);
+//        ExceptionBuilder.buildErrorMessageForClient(bindingResult);
+//
+//        peopleService.update(id, convertedPerson);
+//        personDTO.setPassword(convertedPerson.getPassword());
 
-        personValidator.validate(convertedPerson, bindingResult);
+        ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
+
+        personValidator.validate(peopleService.convertToPersonFromDTO(personDTO), bindingResult);
         ExceptionBuilder.buildErrorMessageForClient(bindingResult);
 
-        peopleService.update(id, convertedPerson);
-        personDTO.setPassword(convertedPerson.getPassword());
+        peopleService.update(id, peopleService.convertToPersonFromDTO(personDTO));
+        personDTO.setPassword(peopleService.convertToPersonFromDTO(personDTO).getPassword());
+
         return ResponseEntity.ok(personDTO);
     }
 
