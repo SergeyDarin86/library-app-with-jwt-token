@@ -79,7 +79,7 @@ class LibraryAppWithSecurityApplicationTests {
                 .perform(get("/library/books").accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", this.token))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("bookDTOList", Matchers.hasSize(12)));
+                .andExpect(jsonPath("bookDTOList", Matchers.hasSize(13)));
     }
 
     @Test

@@ -2,27 +2,18 @@ package ru.library.springcourse.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.apache.tomcat.jni.Multicast;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Book;
@@ -33,16 +24,16 @@ import ru.library.springcourse.services.BooksService;
 import ru.library.springcourse.services.PeopleService;
 import ru.library.springcourse.util.*;
 
-import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 class BookControllerTest {
@@ -188,7 +179,7 @@ class BookControllerTest {
         bookDTO.setYearOfRealise(1600);
         String errorMsg = "Год издания книги должен быть больше 1700";
 
-        when(bookController.newBook(bookDTO,bindingResult)).thenThrow(new LibraryException(errorMsg));
+        when(bookController.newBook(bookDTO, bindingResult)).thenThrow(new LibraryException(errorMsg));
 
         mockMvc.perform(post("/library/newBook")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -199,59 +190,23 @@ class BookControllerTest {
 
     }
 
-    @Mock
-    ModelMapper modelMapper;
-
-    @InjectMocks
-    Book convertedBook = new Book();
-
-    //TODO: разобраться с данным методом - не работает
-
-        @Test
-    void updateBook() throws Exception{
-//        ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, booksService.show(id));
-//        Book convertedBook = booksService.convertToBookFromDTO(bookDTO);
-//        convertedBook.setBookId(id);
-//
-//        bookValidator.validate(convertedBook, bindingResult);
-//        ExceptionBuilder.buildErrorMessageForClient(bindingResult);
-//
-//        booksService.update(id, booksService.convertToBookFromDTO(bookDTO));
-
-
-
+    @Test
+    void updateBook() throws Exception {
         Book book = Mockito.mock(Book.class);
         book.setBookId(1);
         BookDTO bookDTO = new BookDTO();
         bookDTO.setTitle("Машина времени");
-        bookDTO.setAuthor("Иван Иванов");
+        bookDTO.setAuthor("Тестовый Автор");
         bookDTO.setYearOfRealise(1800);
         int bookId = 1;
 
-//        when(modelMapper.map(bookDTO, Book.class)).thenReturn(convertedBook);
-//        when(booksService.convertToBookFromDTO(bookDTO)).thenReturn(convertedBook);
-//        convertedBook.setBookId(1);
+        Book convertedBook = Mockito.mock(Book.class);
 
-//        verify(booksService,times(1)).convertToBookFromDTO(bookDTO);
+        when(booksService.show(bookId)).thenReturn(book);
+        doNothing().when(book).setBookId(bookId);
+        doNothing().when(booksService).update(bookId, book);
 
-//        BooksService spy = Mockito.spy(new BooksService(booksRepository, modelMapper));
-//        Mockito.doReturn(convertedBook).when(spy).convertToBookFromDTO(any(BookDTO.class));
-
-//////////////////////////////////
-        ///////////////////////////////
-
-//        booksService.update(bookId,book);
-//        verify(booksService,times(1)).update(bookId,book);
-////        when(booksService.show(bookId)).thenReturn(convertedBook);
-//
-//        when(booksRepository.findById(bookId)).thenReturn(Optional.of(convertedBook));
-            Book convertedBook = Mockito.mock(Book.class);
-
-            when(booksService.show(bookId)).thenReturn(book);
-            doNothing().when(book).setBookId(bookId);
-            doNothing().when(booksService).update(bookId,book);
-
-            when(booksService.convertToBookFromDTO(bookDTO)).thenReturn(convertedBook);
+        when(booksService.convertToBookFromDTO(bookDTO)).thenReturn(convertedBook);
 
         mockMvc.perform(patch("/library/books/" + bookId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -313,7 +268,7 @@ class BookControllerTest {
     }
 
     @Test
-    void deleteBook() throws Exception{
+    void deleteBook() throws Exception {
         Person person = new Person();
         int personId = 1;
         person.setPersonId(personId);
@@ -327,7 +282,7 @@ class BookControllerTest {
     }
 
     @Test
-    void deletePerson() throws Exception{
+    void deletePerson() throws Exception {
         Book book = new Book();
         int bookId = 1;
         book.setBookId(bookId);
@@ -352,7 +307,7 @@ class BookControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
 
-        verify(booksService,times(1)).makeBookFree(bookId);
+        verify(booksService, times(1)).makeBookFree(bookId);
     }
 
     @Test
@@ -370,7 +325,7 @@ class BookControllerTest {
 
         //если поставить 1, то выдаст ошибку: Wanted, but not invoked
         // скорее всего потому, что метод не выполняется ни разу
-        verify(booksService,times(0)).makeBookFree(bookId);
+        verify(booksService, times(0)).makeBookFree(bookId);
     }
 
     @Test
@@ -384,10 +339,10 @@ class BookControllerTest {
         when(booksService.show(bookId)).thenReturn(book);
         when(peopleService.show(personId)).thenReturn(person);
 
-        mockMvc.perform(patch("/library/books/" + bookId +"/"+ personId + "/assignPerson"))
+        mockMvc.perform(patch("/library/books/" + bookId + "/" + personId + "/assignPerson"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
-        verify(booksService,times(1)).assignPerson(bookId,personId);
+        verify(booksService, times(1)).assignPerson(bookId, personId);
     }
 }
