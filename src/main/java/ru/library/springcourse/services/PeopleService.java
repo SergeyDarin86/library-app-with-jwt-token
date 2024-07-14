@@ -12,6 +12,7 @@ import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.PeopleRepository;
 import ru.library.springcourse.securuty.PersonDetails;
+import ru.library.springcourse.util.ExceptionBuilder;
 import ru.library.springcourse.util.PersonResponse;
 
 import java.util.Optional;
@@ -55,12 +56,27 @@ public class PeopleService {
         return peopleRepository.findPersonByFullName(fullName);
     }
 
+    //TODO посмотреть, может убрать setPassword и id с этого метода
     @Transactional
-    public void update(int id, Person updatedPerson) {
+    public PersonDTO update(int id, Person updatedPerson) {
         log.info("Start method update(personId, Person) for peopleService, personId is: {}", id);
-        updatedPerson.setPersonId(id);
-        updatedPerson.setPassword(passwordEncoder.encode(updatedPerson.getPassword()));
+//        updatedPerson.setPersonId(id);
+        updatedPerson.setPassword(updatedPerson.getPassword());
         peopleRepository.saveAndFlush(updatedPerson);
+        return convertToDTOFromPerson(updatedPerson);
+    }
+
+    // еще один новый вариант метода - НЕ ПРОТЕСТИРОВАН
+    @Transactional
+    public Person convertedPerson(int id, PersonDTO personDTO) {
+        log.info("Start method update(personId, Person) for peopleService, personId is: {}", id);
+
+        Person convertedPerson = convertToPersonFromDTO(personDTO);
+        convertedPerson.setPersonId(id);
+        convertedPerson.setRole(show(id).getRole());
+        convertedPerson.setPassword(show(id).getPassword());
+
+        return convertedPerson;
     }
 
     @Transactional

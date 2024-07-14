@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
@@ -60,6 +59,9 @@ class BookControllerTest {
 
     @Mock
     BookValidator bookValidator;
+
+    @Mock
+    PersonValidator personValidator;
 
     @Autowired
     ObjectMapper mapper;
@@ -346,75 +348,24 @@ class BookControllerTest {
         verify(booksService, times(1)).assignPerson(bookId, personId);
     }
 
-    @Mock
-    PersonValidator personValidator;
-
-
-//    @Test
-//    @SneakyThrows
-//    void updatePerson() {
-//
-//        Person person= Mockito.mock(Person.class);
-//        person.setPersonId(1);
-//
-////        when(person.getPassword()).thenReturn("user");
-//
-//        PersonDTO personDTO = new PersonDTO();
-//        personDTO.setFullName("Дарин Сергей Владимирович");
-//        personDTO.setYearOfBirthday(1986);
-//        personDTO.setLogin("user");
-//        personDTO.setPassword("user");
-//        int personId = 1;
-//
-//        Person convertedPerson = new Person();
-//        convertedPerson.setPassword("user");
-//
-//        when(peopleService.show(personId)).thenReturn(person);
-//
-//        when(peopleService.convertToPersonFromDTO(personDTO)).thenReturn(person);
-//        doNothing().when(personValidator).validate(person,bindingResult);
-//
-//        doNothing().when(person).setPersonId(personId);
-//        doNothing().when(peopleService).update(personId, person);
-//        when(peopleService.convertToPersonFromDTO(personDTO)).thenReturn(convertedPerson);
-//
-//        personDTO.setPassword(person.getPassword());
-//
-//        mockMvc.perform(patch("/library/people/" + personId)
-//                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                        .content(mapper.writeValueAsString(personDTO))
-//                )
-//                .andDo(print())
-//                .andExpect(status().is2xxSuccessful())
-//                .andDo(print());
-//
-//    }
-
-//    @Test
+    @Test
     @SneakyThrows
     void updatePerson() {
 
-        Person person= Mockito.mock(Person.class);
+        int personId = 1;
+        Person person = new Person();
+        person.setPersonId(personId);
 
         PersonDTO personDTO = new PersonDTO();
         personDTO.setFullName("Дарин Сергей Владимирович");
         personDTO.setYearOfBirthday(1986);
         personDTO.setLogin("user");
         personDTO.setPassword("user");
-        int personId = 1;
-
-        Person convertedPerson = new Person();
-        convertedPerson.setPassword("user");
-//        when(convertedPerson.getPassword()).thenReturn("user");
 
         when(peopleService.show(personId)).thenReturn(person);
-        doNothing().when(personValidator).validate(person,bindingResult);
-        doNothing().when(peopleService).update(personId, person);
-        when(peopleService.convertToPersonFromDTO(personDTO)).thenReturn(convertedPerson);
-//        when(convertedPerson.getPassword()).thenReturn("user");
-
-        String password = person.getPassword();
-        personDTO.setPassword(convertedPerson.getPassword());
+        when(peopleRepository.findById(personId)).thenReturn(Optional.of(person));
+        when(peopleService.convertToPersonFromDTO(personDTO)).thenReturn(person);
+        personValidator.validate(peopleService.convertToPersonFromDTO(personDTO),bindingResult);
 
         mockMvc.perform(patch("/library/people/" + personId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)

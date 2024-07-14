@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Book;
-import ru.library.springcourse.models.Person;
 import ru.library.springcourse.services.AdminService;
 import ru.library.springcourse.services.BooksService;
 import ru.library.springcourse.services.PeopleService;
@@ -88,20 +87,7 @@ public class BookController {
     public ResponseEntity updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult,
                                      @PathVariable("id") int id) {
         ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, booksService.show(id));
-
-        //TODO: старые строчки кода, которые возможно нужно убрать
-        // проверить работоспособность
-//        Book convertedBook = booksService.convertToBookFromDTO(bookDTO);
-//        convertedBook.setBookId(id);
-//
-//        bookValidator.validate(convertedBook, bindingResult);
-
-        //TODO
-        // возможно не нужно создавать отдельную переменную convertedBook
-        // а просто обойтись методом конвертации
-        // с этой строкой тесты проходят - нужно проверить как будет работать программа с этими изменениями
         bookValidator.validate(booksService.convertToBookFromDTO(bookDTO), bindingResult);
-        //
         ExceptionBuilder.buildErrorMessageForClient(bindingResult);
 
         booksService.update(id, booksService.convertToBookFromDTO(bookDTO));
@@ -152,24 +138,11 @@ public class BookController {
     @PatchMapping("/people/{id}")
     public ResponseEntity updatePerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult,
                                        @PathVariable("id") int id) {
-
-//        ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
-//        Person convertedPerson = peopleService.convertToPersonFromDTO(personDTO);
-//        convertedPerson.setPersonId(id);
-//
-//        personValidator.validate(convertedPerson, bindingResult);
-//        ExceptionBuilder.buildErrorMessageForClient(bindingResult);
-//
-//        peopleService.update(id, convertedPerson);
-//        personDTO.setPassword(convertedPerson.getPassword());
-
         ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
 
-        personValidator.validate(peopleService.convertToPersonFromDTO(personDTO), bindingResult);
+        personValidator.validate(peopleService.convertedPerson(id,personDTO), bindingResult);
         ExceptionBuilder.buildErrorMessageForClient(bindingResult);
-
-        peopleService.update(id, peopleService.convertToPersonFromDTO(personDTO));
-        personDTO.setPassword(peopleService.convertToPersonFromDTO(personDTO).getPassword());
+        peopleService.update(id, peopleService.convertedPerson(id,personDTO));
 
         return ResponseEntity.ok(personDTO);
     }
