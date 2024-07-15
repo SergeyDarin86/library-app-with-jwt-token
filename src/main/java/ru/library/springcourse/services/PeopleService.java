@@ -12,7 +12,6 @@ import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.PeopleRepository;
 import ru.library.springcourse.securuty.PersonDetails;
-import ru.library.springcourse.util.ExceptionBuilder;
 import ru.library.springcourse.util.PersonResponse;
 
 import java.util.Optional;
@@ -67,9 +66,10 @@ public class PeopleService {
     }
 
     // еще один новый вариант метода - НЕ ПРОТЕСТИРОВАН
+//    $2a$10$JJAPQf0iU0f2o6.WvNTiY.GI/ezpHN5obijRuX9CoLWUdHHe.bRae - USER2
     @Transactional
-    public Person convertedPerson(int id, PersonDTO personDTO) {
-        log.info("Start method update(personId, Person) for peopleService, personId is: {}", id);
+    public Person getConvertedPerson(int id, PersonDTO personDTO) {
+        log.info("Start method getConvertedPerson(personId, PersonDTO) for peopleService, personId is: {}", id);
 
         Person convertedPerson = convertToPersonFromDTO(personDTO);
         convertedPerson.setPersonId(id);

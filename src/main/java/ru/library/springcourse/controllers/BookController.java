@@ -140,9 +140,9 @@ public class BookController {
                                        @PathVariable("id") int id) {
         ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
 
-        personValidator.validate(peopleService.convertedPerson(id,personDTO), bindingResult);
+        personValidator.validate(peopleService.getConvertedPerson(id,personDTO), bindingResult);
         ExceptionBuilder.buildErrorMessageForClient(bindingResult);
-        peopleService.update(id, peopleService.convertedPerson(id,personDTO));
+        peopleService.update(id, peopleService.getConvertedPerson(id,personDTO));
 
         return ResponseEntity.ok(personDTO);
     }
