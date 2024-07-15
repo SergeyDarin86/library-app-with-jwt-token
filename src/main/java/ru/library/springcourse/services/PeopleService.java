@@ -55,18 +55,15 @@ public class PeopleService {
         return peopleRepository.findPersonByFullName(fullName);
     }
 
-    //TODO посмотреть, может убрать setPassword и id с этого метода
+    //TODO посмотреть, может убрать id с этого метода
     @Transactional
     public PersonDTO update(int id, Person updatedPerson) {
         log.info("Start method update(personId, Person) for peopleService, personId is: {}", id);
-//        updatedPerson.setPersonId(id);
-        updatedPerson.setPassword(updatedPerson.getPassword());
         peopleRepository.saveAndFlush(updatedPerson);
         return convertToDTOFromPerson(updatedPerson);
     }
 
     // еще один новый вариант метода - НЕ ПРОТЕСТИРОВАН
-//    $2a$10$JJAPQf0iU0f2o6.WvNTiY.GI/ezpHN5obijRuX9CoLWUdHHe.bRae - USER2
     @Transactional
     public Person getConvertedPerson(int id, PersonDTO personDTO) {
         log.info("Start method getConvertedPerson(personId, PersonDTO) for peopleService, personId is: {}", id);
@@ -74,7 +71,7 @@ public class PeopleService {
         Person convertedPerson = convertToPersonFromDTO(personDTO);
         convertedPerson.setPersonId(id);
         convertedPerson.setRole(show(id).getRole());
-        convertedPerson.setPassword(show(id).getPassword());
+        convertedPerson.setPassword(passwordEncoder.encode(personDTO.getPassword()));
 
         return convertedPerson;
     }
