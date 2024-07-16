@@ -349,6 +349,27 @@ class BookControllerTest {
 
     @Test
     @SneakyThrows
+    void assignPersonWithThrowExceptionNotAcceptable() {
+        int bookId = 1;
+        int personId = 1;
+        Book book = Mockito.mock(Book.class);
+        Person person = new Person();
+        person.setPersonId(personId);
+        String errorMsg = " Невозможно назначить книгу - книга уже в пользовании";
+
+        when(booksService.show(bookId)).thenReturn(book);
+        when(peopleService.show(personId)).thenReturn(person);
+        when(!peopleService.show(personId).equals(null)).thenThrow(new LibraryExceptionNotAcceptable(errorMsg));
+
+        mockMvc.perform(patch("/library/books/" + bookId + "/" + personId + "/assignPerson"))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andDo(print());
+        verify(booksService, times(0)).assignPerson(bookId, personId);
+    }
+
+    @Test
+    @SneakyThrows
     void updatePerson() {
 
         int personId = 1;
