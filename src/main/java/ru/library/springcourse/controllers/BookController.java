@@ -80,9 +80,6 @@ public class BookController {
         return ResponseEntity.ok(booksService.convertToDTOFromBook(booksService.show(id)));
     }
 
-    //TODO: посмотреть, как улучшить логику в данном методе
-    // возможно нужно вынести логику в сервис
-
     @PatchMapping("/books/{id}")
     public ResponseEntity updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult,
                                      @PathVariable("id") int id) {

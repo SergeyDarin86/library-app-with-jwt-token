@@ -81,25 +81,7 @@ class PeopleServiceTest extends TestCase {
         Mockito.when(peopleService.allPeople()).thenReturn(personResponse);
         assertEquals(personResponse, peopleService.allPeople());
     }
-// Рабочий вариант
-//    @Test
-//    void update() {
-//        Person updatedPerson = Mockito.mock(Person.class);
-//        updatedPerson.setPersonId(1);
-//
-//        doNothing().when(peopleService).update(1,updatedPerson);
-//        when(repository.saveAndFlush(updatedPerson)).thenReturn(updatedPerson);
-//
-//        repository.saveAndFlush(updatedPerson);
-//        peopleService.update(1,updatedPerson);
-//
-//        verify(repository, times(1)).saveAndFlush(updatedPerson);
-//        verify(peopleService, times(1)).update(1,updatedPerson);
-//
-//        verify(updatedPerson,times(1)).setPersonId(1);
-//    }
 
-    // Новый вариант теста
     @Test
     void update() {
         Person updatedPerson = Mockito.mock(Person.class);
@@ -153,5 +135,19 @@ class PeopleServiceTest extends TestCase {
         PersonDTO actualPersonDTO = peopleService.convertToDTOFromPerson(person1);
         verify(peopleService, times(1)).convertToDTOFromPerson(person1);
         assertEquals(personDTO1,actualPersonDTO);
+    }
+
+    @Test
+    void getConvertedPerson() {
+        int personId = 1;
+        Person expectedPerson = new Person();
+        expectedPerson.setPersonId(personId);
+        expectedPerson.setLogin("user");
+
+        when(peopleService.getConvertedPerson(personId,personDTO1)).thenReturn(expectedPerson);
+        Person actualPerson = peopleService.getConvertedPerson(personId,personDTO1);
+
+        verify(peopleService,times(1)).getConvertedPerson(personId,personDTO1);
+        assertEquals(expectedPerson,actualPerson);
     }
 }
