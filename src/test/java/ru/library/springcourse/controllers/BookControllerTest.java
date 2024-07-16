@@ -317,7 +317,6 @@ class BookControllerTest {
     void makeBookFreeWithThrowException() {
         int bookId = 1;
 
-//        Book book = Mockito.mock(Book.class);
         String errorMsg = bookId + " - Книги с таким id не найдено";
 
         when(booksService.show(bookId)).thenThrow(new LibraryExceptionNotFound(errorMsg));
@@ -394,6 +393,27 @@ class BookControllerTest {
                         .param("searchBook", title))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @SneakyThrows
+    void searchTest(){
+        String title = "Тест";
+        Book book = new Book();
+        book.setTitle(title);
+
+        List<BookDTO>bookDTOList = new ArrayList<>();
+        BookResponse bookResponse = new BookResponse(bookDTOList);
+
+        when(booksService.show(title)).thenReturn(Optional.of(book));
+        when(booksService.getBookListByTitleStartingWith(title)).thenReturn(bookResponse);
+        when(booksRepository.findBookByTitleStartingWith(title)).thenReturn(bookDTOList
+                .stream().map(bookDTO -> booksService.convertToBookFromDTO(bookDTO)).toList());
+
+        mockMvc.perform(get("/library/books/search")
+                        .param("searchBook", title))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
     }
 
 }
