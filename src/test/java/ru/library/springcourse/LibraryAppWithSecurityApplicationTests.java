@@ -83,7 +83,7 @@ class LibraryAppWithSecurityApplicationTests {
     }
 
     @Test
-    void showBook() throws Exception {
+    void showBookById() throws Exception {
         int id = 15;
         this.mockMvc.perform(get("/library/books/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
@@ -100,6 +100,15 @@ class LibraryAppWithSecurityApplicationTests {
                         .header("Authorization", this.token))
                 .andExpect(status().isNotFound());
 //        verify(bookController,times(1)).showBook(id);
+    }
+
+    @Test
+    void showPersonById() throws Exception {
+        int personId = 60;
+        this.mockMvc.perform(get("/library/people/{id}", personId)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", this.token))
+                .andExpect(status().isOk());
     }
 
 }
