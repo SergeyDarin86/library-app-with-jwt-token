@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.library.springcourse.dto.AuthenticationDTO;
 import ru.library.springcourse.securuty.JWTUtil;
@@ -18,6 +21,7 @@ import ru.library.springcourse.services.PeopleService;
 import ru.library.springcourse.services.RegistrationService;
 import ru.library.springcourse.util.PersonValidator;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -77,6 +81,30 @@ class AuthControllerTest {
                 )
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
+    }
+
+    @Test
+    void performLoginWithThrowBadCredentialException() throws Exception {
+
+        AuthenticationDTO authenticationDTO = new AuthenticationDTO();
+        authenticationDTO.setLogin("user");
+        authenticationDTO.setPassword("user");
+
+        UsernamePasswordAuthenticationToken authInputToken =
+                new UsernamePasswordAuthenticationToken(authenticationDTO.getLogin(),
+                        authenticationDTO.getPassword());
+
+        when(authenticationManager.authenticate(authInputToken)).thenThrow(BadCredentialsException.class);
+
+        ResultActions resultActions =  mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(mapper.writeValueAsString(authenticationDTO))
+                )
+                .andExpect(status().is2xxSuccessful());
+        MvcResult mvcResult = resultActions.andReturn();
+        String actualBody = mvcResult.getResponse().getContentAsString();
+
+        assertEquals("{\"message\":\"Incorrect credentials\"}",actualBody);
     }
 
     @Test
