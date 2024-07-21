@@ -83,10 +83,8 @@ class AuthControllerTest {
 
     @BeforeEach
     public void initSecurityContext() {
-        when(authentication.getPrincipal()).thenReturn("mockedPassword");
         SecurityContextHolder.getContext().setAuthentication(authentication);
         when(authentication.getPrincipal()).thenReturn(personDetails);
-
     }
 
     @AfterEach
@@ -201,11 +199,7 @@ class AuthControllerTest {
 
     @Test
     void showUserInfo() throws Exception {
-        PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-        when(authentication.getPrincipal()).thenReturn(personDetails);
         when(personDetails.getUsername()).thenReturn("user");
-
-        SecurityContextHolder.getContext().getAuthentication().getCredentials();
 
         ResultActions resultActions = mockMvc.perform(get("/auth/showUserInfo"))
                 .andDo(print())
