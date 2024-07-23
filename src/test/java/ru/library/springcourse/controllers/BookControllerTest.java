@@ -270,7 +270,7 @@ class BookControllerTest {
     }
 
     @Test
-    void deleteBook() throws Exception {
+    void deletePerson() throws Exception {
         Person person = new Person();
         int personId = 1;
         person.setPersonId(personId);
@@ -284,7 +284,7 @@ class BookControllerTest {
     }
 
     @Test
-    void deletePerson() throws Exception {
+    void deleteBook() throws Exception {
         Book book = new Book();
         int bookId = 1;
         book.setBookId(bookId);
@@ -406,15 +406,19 @@ class BookControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    @Test
-    void searchWithExceptionBookNotFound() throws Exception{
-        String title = "Основы";
+    /**
+     * Возможно данный тест лишний - убрал условие проверки из контроллера
+     */
 
-        mockMvc.perform(get("/library/books/search")
-                        .param("searchBook", title))
-                .andDo(print())
-                .andExpect(status().is4xxClientError());
-    }
+//    @Test
+//    void searchWithExceptionBookNotFound() throws Exception{
+//        String title = "Новый";
+//
+//        mockMvc.perform(get("/library/books/search")
+//                        .param("searchBook", title))
+//                .andDo(print())
+//                .andExpect(status().is4xxClientError());
+//    }
 
     @Test
     @SneakyThrows

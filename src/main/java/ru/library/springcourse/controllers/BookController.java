@@ -121,7 +121,9 @@ public class BookController {
     public ResponseEntity search(@RequestParam(value = "searchBook", required = false, defaultValue = "") String searchBook) {
 
         ExceptionBuilder.buildErrorMessageForClientTitleNotEntered(searchBook);
-        ExceptionBuilder.buildErrorMessageForClientBookNotFound(booksService.show(searchBook));
+        //TODO: возможно нужно изменить код - добавить проверку на размер листа
+        // если = 0, то сообщение "Книг не найдено"
+        //        ExceptionBuilder.buildErrorMessageForClientBookNotFound(booksService.show(searchBook));
         return ResponseEntity.ok(booksService.getBookListByTitleStartingWith(searchBook));
 
     }
@@ -137,9 +139,9 @@ public class BookController {
                                        @PathVariable("id") int id) {
         ExceptionBuilder.buildErrorMessageForClientPersonIdNotFound(id, peopleService.show(id));
 
-        personValidator.validate(peopleService.getConvertedPerson(id,personDTO), bindingResult);
+        personValidator.validate(peopleService.getConvertedPerson(id, personDTO), bindingResult);
         ExceptionBuilder.buildErrorMessageForClient(bindingResult);
-        peopleService.update(id, peopleService.getConvertedPerson(id,personDTO));
+        peopleService.update(id, peopleService.getConvertedPerson(id, personDTO));
 
         return ResponseEntity.ok(personDTO);
     }
