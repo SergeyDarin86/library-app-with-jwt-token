@@ -1,3 +1,3 @@
--- delete from book;
--- delete from person;
-select * from book;
+delete from book;
+delete from person;
+-- select * from book;

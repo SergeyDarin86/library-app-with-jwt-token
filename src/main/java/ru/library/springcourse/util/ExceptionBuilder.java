@@ -6,7 +6,6 @@ import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ExceptionBuilder {
     public static void buildErrorMessageForClient(BindingResult bindingResult) {
@@ -30,9 +29,9 @@ public class ExceptionBuilder {
         }
     }
 
-    public static void buildErrorMessageForClientBookNotFound(Optional<Book>bookOptional) {
-        if (bookOptional.isEmpty()) {
-            String errorMsg = "Такой книги не найдено Book not found";
+    public static void buildErrorMessageForClientBookNotFound(BookResponse bookResponse) {
+        if (bookResponse.getBookDTOList().isEmpty()) {
+            String errorMsg = "Не найдено соответствий по заголовку";
 
             throw new LibraryExceptionNotFound(errorMsg);
         }
@@ -48,7 +47,7 @@ public class ExceptionBuilder {
 
     public static void buildErrorMessageForClientTitleNotEntered(String searchedBook) {
         if (searchedBook == null || searchedBook.equals("")) {
-            String errorMsg = " Введите поисковый запрос No query";
+            String errorMsg = " Введите поисковый запрос";
 
             throw new LibraryExceptionNotFound(errorMsg);
         }

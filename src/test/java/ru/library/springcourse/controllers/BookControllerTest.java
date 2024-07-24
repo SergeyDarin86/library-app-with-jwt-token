@@ -406,34 +406,34 @@ class BookControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    /**
-     * Возможно данный тест лишний - убрал условие проверки из контроллера
-     */
-
-//    @Test
-//    void searchWithExceptionBookNotFound() throws Exception{
-//        String title = "Новый";
-//
-//        mockMvc.perform(get("/library/books/search")
-//                        .param("searchBook", title))
-//                .andDo(print())
-//                .andExpect(status().is4xxClientError());
-//    }
-
     @Test
-    @SneakyThrows
-    void searchTest(){
-        String title = "Тест";
-        Book book = new Book();
-        book.setTitle(title);
+    void searchWithExceptionBookNotFound() throws Exception{
+        String title = "Основы";
 
         List<BookDTO>bookDTOList = new ArrayList<>();
         BookResponse bookResponse = new BookResponse(bookDTOList);
 
+        when(booksService.show(title)).thenReturn(Optional.of(new Book()));
+        when(booksService.getBookListByTitleStartingWith(title)).thenReturn(bookResponse);
+
+        mockMvc.perform(get("/library/books/search")
+                        .param("searchBook", title))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @SneakyThrows
+    void searchTest(){
+        String title = "Основы";
+        Book book = new Book();
+        book.setTitle(title);
+
+        List<BookDTO>bookDTOList = List.of(new BookDTO());
+        BookResponse bookResponse = new BookResponse(bookDTOList);
+
         when(booksService.show(title)).thenReturn(Optional.of(book));
         when(booksService.getBookListByTitleStartingWith(title)).thenReturn(bookResponse);
-        when(booksRepository.findBookByTitleStartingWith(title)).thenReturn(bookDTOList
-                .stream().map(bookDTO -> booksService.convertToBookFromDTO(bookDTO)).toList());
 
         mockMvc.perform(get("/library/books/search")
                         .param("searchBook", title))

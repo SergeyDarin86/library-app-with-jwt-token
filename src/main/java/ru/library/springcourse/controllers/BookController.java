@@ -18,6 +18,7 @@ import ru.library.springcourse.util.*;
 
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/library")
@@ -121,10 +122,7 @@ public class BookController {
     public ResponseEntity search(@RequestParam(value = "searchBook", required = false, defaultValue = "") String searchBook) {
 
         ExceptionBuilder.buildErrorMessageForClientTitleNotEntered(searchBook);
-        //TODO: возможно нужно изменить код - добавить проверку на размер листа
-        // если = 0, то сообщение "Книг не найдено"
-
-        //        ExceptionBuilder.buildErrorMessageForClientBookNotFound(booksService.show(searchBook));
+        ExceptionBuilder.buildErrorMessageForClientBookNotFound(booksService.getBookListByTitleStartingWith(searchBook));
         return ResponseEntity.ok(booksService.getBookListByTitleStartingWith(searchBook));
 
     }

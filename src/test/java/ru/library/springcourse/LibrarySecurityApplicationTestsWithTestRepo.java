@@ -137,6 +137,16 @@ public class LibrarySecurityApplicationTestsWithTestRepo {
     }
 
     @Test
+    void searchWithExceptionBookNotFound() throws Exception {
+
+        mockMvc.perform(get("/library/books/search")
+                        .param("searchBook", "Тестовый заголовок")
+                        .header("Authorization", this.token))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
     void showBookById() throws Exception {
         int id = 2;
         this.mockMvc.perform(get("/library/books/{id}", id)
@@ -180,9 +190,6 @@ public class LibrarySecurityApplicationTestsWithTestRepo {
         bookDTO.setTitle("Машина времени");
         bookDTO.setAuthor("Иван Иванов");
         bookDTO.setYearOfRealise(1890);
-
-        //TODO: Может это лишнее
-//        doNothing().when(bookValidator).validate(bookDTO, bindingResult);
 
         mockMvc.perform(post("/library/newBook")
                         .header("Authorization", this.token)
