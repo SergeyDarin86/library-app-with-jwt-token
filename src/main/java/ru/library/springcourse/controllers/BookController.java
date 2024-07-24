@@ -123,6 +123,7 @@ public class BookController {
         ExceptionBuilder.buildErrorMessageForClientTitleNotEntered(searchBook);
         //TODO: возможно нужно изменить код - добавить проверку на размер листа
         // если = 0, то сообщение "Книг не найдено"
+
         //        ExceptionBuilder.buildErrorMessageForClientBookNotFound(booksService.show(searchBook));
         return ResponseEntity.ok(booksService.getBookListByTitleStartingWith(searchBook));
 

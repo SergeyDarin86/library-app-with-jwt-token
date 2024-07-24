@@ -181,7 +181,8 @@ public class LibrarySecurityApplicationTestsWithTestRepo {
         bookDTO.setAuthor("Иван Иванов");
         bookDTO.setYearOfRealise(1890);
 
-        doNothing().when(bookValidator).validate(bookDTO, bindingResult);
+        //TODO: Может это лишнее
+//        doNothing().when(bookValidator).validate(bookDTO, bindingResult);
 
         mockMvc.perform(post("/library/newBook")
                         .header("Authorization", this.token)
