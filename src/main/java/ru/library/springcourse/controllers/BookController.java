@@ -16,9 +16,7 @@ import ru.library.springcourse.services.BooksService;
 import ru.library.springcourse.services.PeopleService;
 import ru.library.springcourse.util.*;
 
-
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/library")
