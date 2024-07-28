@@ -1,5 +1,5 @@
-drop table book;
-drop table person;
+drop table if exists book;
+drop table if exists person;
 
 -- CREATE TABLE IF NOT EXISTS mytable
 
