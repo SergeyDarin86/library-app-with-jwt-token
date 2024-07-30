@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Book;
+import ru.library.springcourse.resource.LibraryResource;
 import ru.library.springcourse.services.AdminService;
 import ru.library.springcourse.services.BooksService;
 import ru.library.springcourse.services.PeopleService;
@@ -22,7 +23,7 @@ import javax.validation.Valid;
 @RequestMapping("/library")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class BookController {
+public class BookController implements LibraryResource {
 
     PersonValidator personValidator;
 
@@ -70,7 +71,7 @@ public class BookController {
 
     @GetMapping("/books/{id}")
     @ResponseBody
-    public ResponseEntity showBook(@PathVariable("id") int id) {
+    public ResponseEntity<BookDTO> showBook(@PathVariable("id") int id) {
         Book book = booksService.show(id);
 
         if (book == null) {
