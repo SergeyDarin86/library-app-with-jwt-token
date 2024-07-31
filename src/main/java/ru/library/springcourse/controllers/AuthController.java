@@ -1,5 +1,6 @@
 package ru.library.springcourse.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +27,9 @@ import ru.library.springcourse.util.PersonValidator;
 import javax.validation.Valid;
 import java.util.Map;
 
+@Tag(name = "Api сервиса регистрации",
+        description = "Сервис предназначен для:" +
+                " регистрации читателей, редактирования и удаления данных о них")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
