@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.library.springcourse.dto.BookDTO;
+import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
@@ -133,6 +134,15 @@ public class BooksService {
 
     public Book convertToBookFromDTO(BookDTO bookDTO) {
         return modelMapper.map(bookDTO, Book.class);
+    }
+
+    @Transactional
+    public Book getConvertedBook(int id, BookDTO bookDTO) {
+        log.info("Start method getConvertedBook(bookId, BookDTO) for bookService, BookId is: {}", id);
+
+        Book convertedBook = convertToBookFromDTO(bookDTO);
+        convertedBook.setBookId(id);
+        return convertedBook;
     }
 
     public BookDTO convertToDTOFromBook(Book book) {

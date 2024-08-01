@@ -84,7 +84,7 @@ public class BookController implements LibraryResource {
     public ResponseEntity updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult,
                                      @PathVariable("id") int id) {
         ExceptionBuilder.buildErrorMessageForClientBookIdNotFound(id, booksService.show(id));
-        bookValidator.validate(booksService.convertToBookFromDTO(bookDTO), bindingResult);
+        bookValidator.validate(booksService.getConvertedBook(id,bookDTO), bindingResult);
         ExceptionBuilder.buildErrorMessageForClient(bindingResult);
 
         booksService.update(id, booksService.convertToBookFromDTO(bookDTO));
