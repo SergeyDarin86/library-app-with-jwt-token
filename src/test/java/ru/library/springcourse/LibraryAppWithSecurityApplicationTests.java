@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql(value = {"/create-person-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/delete-person-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class LibraryAppWithSecurityApplicationTests {
 
     @Autowired
@@ -70,7 +73,7 @@ class LibraryAppWithSecurityApplicationTests {
                 .perform(get("/library/people").accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", this.token))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("personDTOList", Matchers.hasSize(13)));
+                .andExpect(jsonPath("personDTOList", Matchers.hasSize(2)));
     }
 
     @Test
@@ -79,12 +82,12 @@ class LibraryAppWithSecurityApplicationTests {
                 .perform(get("/library/books").accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", this.token))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("bookDTOList", Matchers.hasSize(13)));
+                .andExpect(jsonPath("bookDTOList", Matchers.hasSize(3)));
     }
 
     @Test
     void showBookById() throws Exception {
-        int id = 15;
+        int id = 2;
         this.mockMvc.perform(get("/library/books/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", this.token))
@@ -104,7 +107,7 @@ class LibraryAppWithSecurityApplicationTests {
 
     @Test
     void showPersonById() throws Exception {
-        int personId = 60;
+        int personId = 1;
         this.mockMvc.perform(get("/library/people/{id}", personId)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", this.token))
