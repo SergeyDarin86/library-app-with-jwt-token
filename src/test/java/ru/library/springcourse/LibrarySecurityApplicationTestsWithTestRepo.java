@@ -106,8 +106,8 @@ public class LibrarySecurityApplicationTestsWithTestRepo {
                 .andExpect(jsonPath("bookDTOList", Matchers.hasSize(3)))
                 .andExpect(content().json("""
                                         {"bookDTOList" : [
-                                        {"yearOfRealise":1999,"title":"Основы программирования","author":"Стив Джобс","person":{"personId":1,"fullName":"Петров Новый Петрович","yearOfBirthday":2010,"login":"user","password":"$2a$10$/8DrxTG6yiPC7QdyJFlu3OON8N2IekstYla/vIOg.Fvebs/oH.8ea","role":"ROLE_ADMIN"}},
-                                        {"yearOfRealise":2019,"title":"Очаровательный кишечник","author":"Элизабет Тейлор","person":{"personId":2,"fullName":"Никонов Иван Вениаминович","yearOfBirthday":1991,"login":"user2","password":"$2a$10$htNiuCitNrrP0KFmFoV9M.IJKbBRBygCh8lKbvUwrK5yClYB0NL3W","role":"ROLE_USER"}},
+                                        {"yearOfRealise":1999,"title":"Основы программирования","author":"Стив Джобс","person":{"fullName":"Петров Новый Петрович","yearOfBirthday":2010,"login":"user","password":"$2a$10$/8DrxTG6yiPC7QdyJFlu3OON8N2IekstYla/vIOg.Fvebs/oH.8ea"}},
+                                        {"yearOfRealise":2019,"title":"Очаровательный кишечник","author":"Элизабет Тейлор","person":{"fullName":"Никонов Иван Вениаминович","yearOfBirthday":1991,"login":"user2","password":"$2a$10$htNiuCitNrrP0KFmFoV9M.IJKbBRBygCh8lKbvUwrK5yClYB0NL3W"}},
                                         {"yearOfRealise":2010,"title":"Инвестиции в будущее","author":"Элизабет Тейлор","person":null}
                                         ]}
                         """));

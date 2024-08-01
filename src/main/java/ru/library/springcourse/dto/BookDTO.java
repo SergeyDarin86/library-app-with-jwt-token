@@ -3,10 +3,9 @@ package ru.library.springcourse.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import ru.library.springcourse.models.Person;
 
-import javax.persistence.Column;
 import javax.validation.constraints.*;
 
-@Schema(description = "DTO для сущности \"Книга\"")
+@Schema(description = "DTO для сущности \"Book\"")
 public class BookDTO {
 
     @Schema(description = "Год издания книги", example = "1990")
@@ -26,14 +25,14 @@ public class BookDTO {
     @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "Автор должен быть следующего формата: Фамилия Имя")
     private String author;
 
-    private Person person;
+    private PersonDTO personDTO;
 
-    public Person getPerson() {
-        return person;
+    public PersonDTO getPerson() {
+        return personDTO;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setPerson(PersonDTO person) {
+        this.personDTO = person;
     }
 
     public Integer getYearOfRealise() {
@@ -66,7 +65,7 @@ public class BookDTO {
                 "yearOfRealise=" + yearOfRealise +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", person=" + person +
+                ", person=" + personDTO +
                 '}';
     }
 }

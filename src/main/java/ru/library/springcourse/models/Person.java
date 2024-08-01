@@ -2,8 +2,8 @@ package ru.library.springcourse.models;
 
 //import jakarta.persistence.*;
 //import jakarta.validation.constraints.*;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -11,7 +11,6 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Objects;
 
-@Schema(description = "Модель для сущности \"Person\"")
 @Entity
 @Table(name = "person")
 public class Person {
@@ -22,14 +21,13 @@ public class Person {
     // в противном случае не получается полноценно извлечь значение поля и оно для всех будет равно 0
     // долго искал причину, почему приходит из запроса "Select * from Person" значения для id для всех
     // записей было равно 0 (((
-    @Schema(description = "идентификатор пользователя", example = "34")
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "person_id")
     private int personId;
 
     // на данный момент regex для кириллицы
-    @Schema(description = "ФИО пользователя", example = "Дарин Сергей Владимирович")
     @NotEmpty(message = "ФИО обязательно для заполнения")
     @Size(min = 8, max = 100, message = "ФИО должно содержать от 8 до 100 символов")
     @Pattern(regexp = "[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+", message = "ФИО должно соответсвовать следующему формату: Фамилия Имя Отчество")
@@ -39,7 +37,6 @@ public class Person {
 
     //TODO: посмотреть как настроить Pattern для числового поля, чтобы вводить только 4 символа для г.р.
 
-    @Schema(description = "Год рождения", example = "1986")
     @Min(value = 1900, message = "Год рождения должен быть больше 1900г.")
     @NotNull(message = "Год рождения не должен быть пустым")
     @Column(name = "year_of_birthday")
@@ -52,17 +49,14 @@ public class Person {
     org.hibernate.annotations.CascadeType.REFRESH})
     private List<Book>books;
 
-    @Schema(description = "Логин", example = "user")
     @Column(name = "login")
     @NotEmpty(message = "Логин не должен быть пустым")
     private String login;
 
-    @Schema(description = "Пароль", example = "password")
     @Column(name = "password")
     @NotEmpty(message = "Пароль не должен быть пустым")
     private String password;
 
-    @Schema(description = "Роль", example = "ROLE_ADMIN")
     @Column(name = "role")
     private String role;
 
