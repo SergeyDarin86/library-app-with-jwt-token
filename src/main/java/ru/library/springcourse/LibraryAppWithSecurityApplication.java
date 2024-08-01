@@ -32,7 +32,7 @@ public class LibraryAppWithSecurityApplication {
 				.apis(RequestHandlerSelectors.basePackage("ru.library.springcourse.controllers"))
 				.paths(PathSelectors.any())
 				.build()
-				.apiInfo(apiInfo());
+				.apiInfo(apiInfo()).useDefaultResponseMessages(false);
 	}
 
 	private ApiInfo apiInfo() {
@@ -41,8 +41,8 @@ public class LibraryAppWithSecurityApplication {
 				"Сервис для работы с библиотекой",
 				"1.0.0",
 				"Условия обслуживания",
-				new Contact("Дарин Сергей", "www.darin.com", "swd86@mail.com"),
-				"License of API", "API license URL", Collections.emptyList());
+				new Contact("Дарин Сергей", "https://securetoken.google.com", "www.swd86@mail.com"),
+				"License of API", "www.my-license-url.com", Collections.emptyList());
 	}
 
 }

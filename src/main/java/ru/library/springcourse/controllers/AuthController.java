@@ -1,5 +1,6 @@
 package ru.library.springcourse.controllers;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.library.springcourse.dto.AuthenticationDTO;
 import ru.library.springcourse.dto.PersonDTO;
+import ru.library.springcourse.resource.AuthControllerResource;
 import ru.library.springcourse.securuty.JWTUtil;
 import ru.library.springcourse.securuty.PersonDetails;
 import ru.library.springcourse.services.PeopleService;
@@ -27,14 +29,11 @@ import ru.library.springcourse.util.PersonValidator;
 import javax.validation.Valid;
 import java.util.Map;
 
-@Tag(name = "Api сервиса регистрации",
-        description = "Сервис предназначен для:" +
-                " регистрации читателей, редактирования и удаления данных о них")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AuthController {
+public class AuthController implements AuthControllerResource {
 
     PersonValidator personValidator;
 
