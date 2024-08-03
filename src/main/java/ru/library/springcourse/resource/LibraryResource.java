@@ -25,6 +25,8 @@ import javax.validation.Valid;
                 " регистрации новых книг, редактировании и удалении данных об устаревших книгах; " +
                 " назначения книг читателям и освобождения книг.")
 public interface LibraryResource {
+
+    @Operation(summary = "Вход на страницу админа", description = "Необходимо иметь роль \"ROLE_ADMIN\"")
     @GetMapping("/admin")
     String adminPage();
 
