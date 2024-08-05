@@ -148,11 +148,31 @@ public interface LibraryResource {
             @ApiParam(value = "Идентификатор книги", example = "1") @PathVariable("bookId") int bookId,
             @ApiParam(value = "Идентификатор читателя", example = "2") @PathVariable("personId") int personId);
 
+    @Operation(
+            summary = "Удаление книги",
+            description = "Необходимо отправить корректный идентификатор книги."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - Книги с таким id не найдено")
+    })
     @DeleteMapping("/books/{id}")
-    ResponseEntity deleteBook(@PathVariable("id") int id);
+    ResponseEntity deleteBook(
+           @ApiParam(value = "Идентификатор книги", example = "3") @PathVariable("id") int id
+    );
 
+    @Operation(
+            summary = "Поиск книги по ее названию",
+            description = "Необходимо ввести часть заголовка книги или заголовок полностью."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Не найдено соответствий по заголовку/Введите поисковый запрос")
+    })
     @GetMapping("/books/search")
-    ResponseEntity search(@RequestParam(value = "searchBook", required = false, defaultValue = "") String searchBook);
+    ResponseEntity search(
+            @ApiParam(value = "Заголовок книги", example = "Фараон")  @RequestParam(value = "searchBook", required = false, defaultValue = "") String searchBook
+    );
 
     @Operation(
             summary = "Получение читателя по его идентификационному номеру",
@@ -177,6 +197,16 @@ public interface LibraryResource {
     ResponseEntity updatePerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult,
                                 @PathVariable("id") int id);
 
+    @Operation(
+            summary = "Удаление читателя",
+            description = "Необходимо отправить корректный идентификатор читателя."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - Читателя с таким id не найдено")
+    })
     @DeleteMapping("/people/{id}")
-    ResponseEntity deletePerson(@PathVariable("id") int id);
+    ResponseEntity deletePerson(
+            @ApiParam(value = "Идентификатор читателя", example = "3") @PathVariable("id") int id
+    );
 }

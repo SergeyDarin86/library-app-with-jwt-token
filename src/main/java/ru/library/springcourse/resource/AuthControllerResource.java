@@ -3,6 +3,7 @@ package ru.library.springcourse.resource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.library.springcourse.dto.AuthenticationDTO;
 import ru.library.springcourse.dto.PersonDTO;
+import ru.library.springcourse.util.LibraryErrorResponse;
+import ru.library.springcourse.util.LibraryException;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -33,6 +36,18 @@ public interface AuthControllerResource {
                     @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = String.class)))
+            })
+    @ApiResponse(
+            responseCode = "400",
+            description = "Incorrect Credentials",
+            content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema (
+                                    schema = @Schema(implementation = LibraryErrorResponse.class,
+                                    discriminatorMapping = {
+                                            @DiscriminatorMapping(value = "esfdsf", schema = LibraryErrorResponse.class)
+                                    })))
             })
     ResponseEntity performRegistration(@RequestBody @Valid PersonDTO personDTO
             , BindingResult bindingResult);
