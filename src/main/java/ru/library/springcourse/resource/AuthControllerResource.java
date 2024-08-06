@@ -1,5 +1,6 @@
 package ru.library.springcourse.resource;
 
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.library.springcourse.dto.AuthenticationDTO;
 import ru.library.springcourse.dto.PersonDTO;
@@ -18,8 +20,10 @@ import ru.library.springcourse.util.LibraryException;
 import javax.validation.Valid;
 import java.util.Map;
 
-@Tag(name = "Api сервиса Аутентификации",
-        description = "Сервис предназначен для регистрации читателей")
+//@Tag(name = "Api сервиса Аутентификации",
+//        description = "Сервис предназначен для регистрации читателей")
+@Api(description = "Endpoints for Creating, Retrieving, Updating and Deleting of Contacts.",
+        tags = {"contact"})
 public interface AuthControllerResource {
 
     @Operation(summary = "Вход в систему", description = "Необходимо ввести корректные данные (логин, пароль)")
@@ -58,12 +62,13 @@ public interface AuthControllerResource {
             description = "Метод успешно выполнен.",
             content = {
                     @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = String.class)))
+                            mediaType = "Text",
+                            array = @ArraySchema(schema = @Schema(implementation = String.class,defaultValue = "String")))
             })
     @ApiResponse(
             responseCode = "405",
             description = "Method not allowed")
 
+    @GetMapping
     String showUserInfo();
 }
