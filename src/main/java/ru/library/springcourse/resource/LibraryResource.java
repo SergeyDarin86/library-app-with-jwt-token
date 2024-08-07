@@ -1,18 +1,18 @@
 package ru.library.springcourse.resource;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.library.springcourse.config.SwaggerConfig;
 import ru.library.springcourse.dto.BookDTO;
 import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.util.BookResponse;
@@ -20,11 +20,7 @@ import ru.library.springcourse.util.PersonResponse;
 
 import javax.validation.Valid;
 
-@Tag(name = "Api сервиса библиотеки",
-        description = "Сервис предназначен для:" +
-                " редактирования и удаления данных о читателях;" +
-                " регистрации новых книг, редактировании и удалении данных об устаревших книгах; " +
-                " назначения книг читателям и освобождения книг.")
+@Api(tags = {SwaggerConfig.TAG_LIBRARY})
 public interface LibraryResource {
 
     @Operation(summary = "Вход на страницу админа", description = "Необходимо иметь роль \"ROLE_ADMIN\"")
@@ -78,9 +74,9 @@ public interface LibraryResource {
                     })
     })
     @GetMapping("/books")
-    BookResponse books(@ApiParam(value = "Возможность сортировки книг по году издания") @RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear,
-                       @ApiParam(value = "Номер выводимой страницы") @RequestParam(value = "page", required = false) Integer page,
-                       @ApiParam(value = "Количество книг на странице") @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks);
+    BookResponse books(@ApiParam(value = "Возможность сортировки книг по году издания", example = "true") @RequestParam(value = "isSortedByYear", required = false) Boolean isSortedByYear,
+                       @ApiParam(value = "Номер выводимой страницы", example = "1") @RequestParam(value = "page", required = false) Integer page,
+                       @ApiParam(value = "Количество книг на странице", example = "7") @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks);
 
     @Operation(
             summary = "Вывод отсортированного списка страниц. " +

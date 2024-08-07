@@ -7,23 +7,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.library.springcourse.config.SwaggerConfig;
 import ru.library.springcourse.dto.AuthenticationDTO;
 import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.util.LibraryErrorResponse;
-import ru.library.springcourse.util.LibraryException;
 
 import javax.validation.Valid;
 import java.util.Map;
 
-//@Tag(name = "Api сервиса Аутентификации",
-//        description = "Сервис предназначен для регистрации читателей")
-@Api(description = "Endpoints for Creating, Retrieving, Updating and Deleting of Contacts.",
-        tags = {"contact"})
+@Api(tags = {SwaggerConfig.TAG_AUTH_CONTROLLER})
 public interface AuthControllerResource {
 
     @Operation(summary = "Вход в систему", description = "Необходимо ввести корректные данные (логин, пароль)")
