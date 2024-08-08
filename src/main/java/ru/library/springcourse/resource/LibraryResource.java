@@ -24,6 +24,20 @@ import javax.validation.Valid;
 public interface LibraryResource {
 
     @Operation(summary = "Вход на страницу админа", description = "Необходимо иметь роль \"ROLE_ADMIN\"")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Метод успешно выполнен.",
+                    content = {
+                            @Content(
+                                    mediaType = "Text",
+                                    array = @ArraySchema(schema = @Schema(implementation = String.class)))
+                    }),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden"
+            )
+    })
     @GetMapping("/admin")
     String adminPage();
 
