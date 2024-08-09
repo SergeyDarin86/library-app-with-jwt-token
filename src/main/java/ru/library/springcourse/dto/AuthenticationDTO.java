@@ -1,17 +1,18 @@
 package ru.library.springcourse.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 
-@Schema(description = "DTO для аутентификации пользователей")
+@ApiModel(description = "DTO для аутентификации пользователей")
 public class AuthenticationDTO {
 
-    @Schema(description = "логин", example = "user")
+    @ApiModelProperty(notes = "Логин пользователя", example = "user123", required = true)
     @NotEmpty(message = "Логин не должен быть пустым")
     private String login;
 
-    @Schema(description = "пароль", example = "123456")
+    @ApiModelProperty(notes = "Пароль пользователя", example = "11s345d78!", required = true)
     @NotEmpty(message = "Пароль не должен быть пустым")
     private String password;
 

@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,8 +64,6 @@ public interface AuthControllerResource {
     @ApiResponse(
             responseCode = "405",
             description = "Method not allowed")
-    @SecurityRequirement(name = "JWT")
-
     @GetMapping
     String showUserInfo();
 }
