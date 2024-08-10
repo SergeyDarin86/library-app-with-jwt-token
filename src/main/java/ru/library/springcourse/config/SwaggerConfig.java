@@ -14,22 +14,47 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Swagger-конфигурация для проекта
+ *
+ * @author Sergey D.
+ */
 @Configuration
 public class SwaggerConfig {
 
+    /**
+     * Заголовок авторизации
+     */
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
+    /**
+     * Название тега для Сервиса Аутентификации
+     */
     public static final String TAG_AUTH_CONTROLLER = "Api сервиса Аутентификации";
 
+    /**
+     * Название тега для Сервиса Библиотеки
+     */
     public static final String TAG_LIBRARY = "Api сервиса библиотеки";
 
+    /**
+     * Описание сервиса библиотеки
+     */
     public static final String DESCRIPTION_LIBRARY = "Сервис предназначен для:" +
             " \n- редактирования и удаления данных о читателях;" +
             " \n- регистрации новых книг, редактировании и удалении данных об устаревших книгах; " +
             " \n- назначения книг читателям и освобождения книг.";
 
+    /**
+     * Описание сервиса аутентификации
+     */
     public static final String DESCRIPTION_AUTH_CONTROLLER = "Сервис предназначен для регистрации читателей";
 
+    /**
+     * Бин для настройки документации Swagger
+     *
+     * @return Docket docket
+     */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -44,16 +69,29 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo()).useDefaultResponseMessages(false);
     }
 
+    /**
+     * Создание ключа Api
+     * @return ApiKey
+     */
     private ApiKey apiKey() {
         return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");
     }
 
+    /**
+     * Настройка контекста security
+     * @return SecurityContext
+     */
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
                 .build();
     }
 
+    /**
+     * Настройка аутентификации по умолчанию
+     *
+     * @return List<SecurityReference> list
+     */
     List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope
                 = new AuthorizationScope("global", "accessEverything");
@@ -63,6 +101,10 @@ public class SwaggerConfig {
                 new SecurityReference("JWT", authorizationScopes));
     }
 
+    /**
+     * Настройка информации о проекте
+     * @return ApiInfo
+     */
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "My Library REST API",

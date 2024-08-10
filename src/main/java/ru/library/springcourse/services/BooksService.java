@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.library.springcourse.dto.BookDTO;
-import ru.library.springcourse.dto.PersonDTO;
 import ru.library.springcourse.models.Book;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.BooksRepository;
@@ -27,6 +26,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Сервис для работы с книгами в библиотеке (добавление, редактирование, удаление, поиск, отображение списка всех книг, сортировка)
+ *
+ * @author Sergey D.
+ */
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -45,6 +49,15 @@ public class BooksService {
         this.modelMapper = modelMapper;
     }
 
+    /**
+     * Метод для поиска всех книг в библиотеке
+     *
+     * @param isSortedByYear сортировка по году издания книги
+     * @param limitOfBooks количество книг на странице
+     * @param page номер отображаемой страницы
+     *
+     * @return Список книг
+     */
     public List<Book> findAll(Boolean isSortedByYear, Integer page, Integer limitOfBooks) {
         log.info("Start method findAll() for bookService");
 
