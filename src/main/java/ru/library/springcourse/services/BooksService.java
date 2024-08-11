@@ -50,7 +50,7 @@ public class BooksService {
     }
 
     /**
-     * Метод для поиска всех книг в библиотеке
+     * Метод для поиска всех книг в библиотеке с возможностью пагинации
      *
      * @param isSortedByYear сортировка по году издания книги
      * @param limitOfBooks количество книг на странице
@@ -73,11 +73,24 @@ public class BooksService {
 
     }
 
+    /**
+     * Метод для получения списка книг, отсортированного по году издания
+     *
+     * @return Отсортированный список книг
+     */
     public BookResponse sortedBooksByYear() {
         log.info("Start method sortedBooksByYear() for bookService");
         return new BookResponse(booksRepository.findAll(Sort.by("yearOfRealise"))
                 .stream().map(this::convertToDTOFromBook).toList());
     }
+
+    /**
+     * Метод для получения экземпляра книги по её идентификационному номеру
+     *
+     * @param id Идентификационный номер книги
+     *
+     * @return Экземпляр Книги
+     */
 
     public Book show(int id) {
         log.info("Start method show(id) for bookService, bookId is: {} ", id);
@@ -89,17 +102,38 @@ public class BooksService {
         return booksRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Метод для получения экземпляра книги по её заголовку (полное совпадение)
+     *
+     * @param title  Заголовок книги
+     *
+     * @return Экземпляр книги либо NULL
+     */
+
     public Optional<Book> show(String title) {
         log.info("Start method show(title) for bookService, bookTitle is: {} ", title);
         return booksRepository.findBookByTitle(title);
     }
 
+    /**
+     * Метод для сохранения экземпляра книги
+     *
+     * @param book  Экземпляр книги
+     *
+     */
     @Transactional
     public void save(Book book) {
         log.info("Start method save(Book) for bookService, book is: {} ", book);
         booksRepository.save(book);
     }
 
+    /**
+     * Метод для обновления экземпляра книги
+     *
+     * @param id Идентификационный номер книги
+     * @param updatedBook Редактируемая книга
+     *
+     */
     @Transactional
     public void update(int id, Book updatedBook) {
         log.info("Start method update(id, Book) for bookService, id is: {} ", id);
@@ -113,12 +147,25 @@ public class BooksService {
         booksRepository.save(updatedBook);
     }
 
+    /**
+     * Метод для удаления экземпляра книги
+     *
+     * @param id Идентификационный номер книги
+     *
+     */
+
     @Transactional
     public void delete(int id) {
         log.info("Start method delete(id) for bookService, id is: {} ", id);
         booksRepository.deleteById(id);
     }
 
+    /**
+     * Метод для освобождения книги (сдача книги читателем в библиотеку)
+     *
+     * @param id Идентификационный номер книги
+     *
+     */
     @Transactional
     public void makeBookFree(int id) {
         log.info("Start method makeBookFree(id) for bookService, id is: {}", id);
@@ -126,6 +173,13 @@ public class BooksService {
         show(id).setPerson(null);
     }
 
+    /**
+     * Метод для закрепления книги за читателем
+     *
+     * @param bookId Идентификационный номер книги
+     * @param personId Идентификационный номер читателя
+     *
+     */
     @Transactional
     public void assignPerson(int bookId, int personId) {
         log.info("Start method assignPerson(bookId, personId) for bookService, bookId is: {}, personId is : {} ", bookId, personId);
@@ -135,20 +189,49 @@ public class BooksService {
         show(bookId).setPerson(person);
     }
 
+    /**
+     * Метод для получения экземпляра книги по первоначальному совпадению в названии книги
+     *
+     * @param title  Заголовок книги (первые буквы заголовка)
+     *
+     * @return Список найденных книг
+     */
     public BookResponse getBookListByTitleStartingWith(String title) {
         log.info("Start method getBookListByTitleStartingWith(title) for bookService, title is: {} ", title);
         return new BookResponse(booksRepository.findBookByTitleStartingWith(title)
                 .stream().map(this::convertToDTOFromBook).toList());
     }
 
+    /**
+     * Метод для получения читателя, у кого находится книга в данный момент
+     *
+     * @param bookId Идентификационный номер книги
+     *
+     * @return Экземпляр читателя или NULL
+     */
     public Optional<Person> getBookOwner(int bookId) {
         return booksRepository.findById(bookId).map(Book::getPerson);
     }
 
+    /**
+     * Метод для преобразования BookDTO в экземпляр книги
+     *
+     * @param bookDTO Объект DTO для книги
+     *
+     * @return Экземпляр книги
+     */
     public Book convertToBookFromDTO(BookDTO bookDTO) {
         return modelMapper.map(bookDTO, Book.class);
     }
 
+    /**
+     * Метод для получения экземпляра книги
+     *
+     * @param id Идентификационный номер книги
+     * @param bookDTO Объект DTO для книги
+     *
+     * @return Экземпляр книги
+     */
     @Transactional
     public Book getConvertedBook(int id, BookDTO bookDTO) {
         log.info("Start method getConvertedBook(bookId, BookDTO) for bookService, BookId is: {}", id);
@@ -158,10 +241,26 @@ public class BooksService {
         return convertedBook;
     }
 
+    /**
+     * Метод для преобразования экземпляра Book в объект DTO
+     *
+     * @param book Объект экземпляр книги
+     *
+     * @return DTO для книги
+     */
     public BookDTO convertToDTOFromBook(Book book) {
         return modelMapper.map(book, BookDTO.class);
     }
 
+    /**
+     * Метод для поиска всех книг в библиотеке с возможностью пагинации (используется в контроллере)
+     *
+     * @param isSortedByYear сортировка по году издания книги
+     * @param limitOfBooks количество книг на странице
+     * @param page номер отображаемой страницы
+     *
+     * @return BookResponse
+     */
     public BookResponse getAllBooks(Boolean isSortedByYear, Integer page, Integer limitOfBooks) {
         return new BookResponse(findAll(isSortedByYear, page, limitOfBooks)
                 .stream().map(this::convertToDTOFromBook).toList());
