@@ -16,6 +16,11 @@ import ru.library.springcourse.util.PersonResponse;
 
 import java.util.Optional;
 
+/**
+ * Сервис для работы с читателями в библиотеке (редактирование, удаление, поиск, отображение списка всех читателей)
+ *
+ * @author Sergey D.
+ */
 @Slf4j
 @Service
 @Transactional(readOnly = true)
