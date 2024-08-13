@@ -39,9 +39,21 @@ public class PeopleService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Метод для поиска всех читателей в библиотеке
+     *
+     * @return Список читателей
+     */
     public PersonResponse allPeople() {
         return new PersonResponse(peopleRepository.findAll().stream().map(this::convertToDTOFromPerson).toList());
     }
+
+    /**
+     * Метод для получения экземпляра читателя по его идентификационному номеру
+     *
+     * @param personId Идентификационный номер читателя
+     * @return Экземпляр Читателя
+     */
 
     public Person show(int personId) {
         log.info("Start method show(id) for peopleService, id is: {}", personId);
@@ -55,12 +67,25 @@ public class PeopleService {
         return peopleRepository.findById(personId).orElse(null);
     }
 
+    /**
+     * Метод для получения экземпляра читателя по его ФИО (полное совпадение)
+     *
+     * @param fullName ФИО читателя
+     * @return Экземпляр Читателя либо NULL
+     */
+
     public Optional<Person> show(String fullName) {
         log.info("Start method show(fullName) for peopleService, fullName is: {}", fullName);
         return peopleRepository.findPersonByFullName(fullName);
     }
 
-    //TODO посмотреть, может убрать id с этого метода
+    /**
+     * Метод для обновления экземпляра читателя
+     *
+     * @param id            Идентификационный номер читателя
+     * @param updatedPerson Редактируемый читатель
+     * @return DTO для сущности Читатель
+     */
     @Transactional
     public PersonDTO update(int id, Person updatedPerson) {
         log.info("Start method update(personId, Person) for peopleService, personId is: {}", id);
@@ -69,6 +94,14 @@ public class PeopleService {
     }
 
     // еще один новый вариант метода - НЕ ПРОТЕСТИРОВАН
+
+    /**
+     * Метод для получения экземпляра читателя
+     *
+     * @param id        Идентификационный номер читателя
+     * @param personDTO Объект DTO для читателя
+     * @return Экземпляр читателя
+     */
     @Transactional
     public Person getConvertedPerson(int id, PersonDTO personDTO) {
         log.info("Start method getConvertedPerson(personId, PersonDTO) for peopleService, personId is: {}", id);
@@ -81,21 +114,45 @@ public class PeopleService {
         return convertedPerson;
     }
 
+    /**
+     * Метод для удаления экземпляра читателя
+     *
+     * @param id Идентификационный номер читателя
+     */
+
     @Transactional
     public void delete(int id) {
         log.info("Start method delete(id) for peopleService, id is: {}", id);
         peopleRepository.deleteById(id);
     }
 
+    /**
+     * Метод для получения экземпляра читателя по его логину
+     *
+     * @param login Логин читателя
+     * @return Экземпляр читателя либо NULL
+     */
     public Optional<Person> findPersonByUserName(String login) {
         log.info("Start method findPersonByUserName(login) for peopleService, login is: {}", login);
         return peopleRepository.findPersonByLogin(login);
     }
 
+    /**
+     * Метод для преобразования PersonDTO в экземпляр читателя
+     *
+     * @param personDTO Объект DTO для читателя
+     * @return Экземпляр читателя
+     */
     public Person convertToPersonFromDTO(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
     }
 
+    /**
+     * Метод для преобразования экземпляра читателя в объект DTO
+     *
+     * @param person Экземпляр читателя
+     * @return Объект DTO для читателя
+     */
     public PersonDTO convertToDTOFromPerson(Person person) {
         return modelMapper.map(person, PersonDTO.class);
     }
