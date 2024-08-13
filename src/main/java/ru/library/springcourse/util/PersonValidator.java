@@ -8,6 +8,11 @@ import org.springframework.validation.Validator;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.services.PeopleService;
 
+/**
+ * Класс, который предназначен для проверки данных об экземпляре читателя на корректность
+ *
+ * @author Sergey D.
+ */
 @Slf4j
 @Component
 public class PersonValidator implements Validator {
@@ -26,6 +31,13 @@ public class PersonValidator implements Validator {
 
     //В логике данного приложения не может быть двух пользователей
     // с одинаковыми ФИО и логином (именем_пользователя)
+
+    /**
+     * Метод для валидации входящих данных
+     *
+     * @param target Экземпляр читателя
+     * @param errors Ошибка, которая будет выдана пользователю в случае некорректных данных
+     */
 
     @Override
     public void validate(Object target, Errors errors) {

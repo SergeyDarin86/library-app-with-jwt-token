@@ -5,6 +5,11 @@ import ru.library.springcourse.dto.BookDTO;
 
 import java.util.List;
 
+/**
+ * Класс, который возвращает список объектов BookDTO
+ *
+ * @author Sergey D.
+ */
 @ApiModel(description = "Объект, который возвращает список \"BookDTO\"")
 public class BookResponse {
 

@@ -5,6 +5,11 @@ import ru.library.springcourse.dto.PersonDTO;
 
 import java.util.List;
 
+/**
+ * Класс, который возвращает список объектов PersonDTO
+ *
+ * @author Sergey D.
+ */
 @ApiModel(description = "Объект, который возвращает список \"PersonDTO\"")
 public class PersonResponse {
     private List<PersonDTO> personDTOList;

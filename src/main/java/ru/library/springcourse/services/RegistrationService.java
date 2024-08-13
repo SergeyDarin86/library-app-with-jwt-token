@@ -7,6 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.library.springcourse.models.Person;
 import ru.library.springcourse.repositories.PeopleRepository;
 
+/**
+ * Сервис для работы с читателями в библиотеке (регистрация новых читателей)
+ *
+ * @author Sergey D.
+ */
 @Slf4j
 @Service
 public class RegistrationService {
@@ -20,6 +25,11 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Метод для регистрации нового читателя
+     *
+     * @param person Экземпляр читателя
+     */
     @Transactional
     public void register(Person person) {
         log.info("Start method register(person) for RegistrationService, person is: {}", person);

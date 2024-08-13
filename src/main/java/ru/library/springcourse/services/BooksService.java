@@ -53,9 +53,8 @@ public class BooksService {
      * Метод для поиска всех книг в библиотеке с возможностью пагинации
      *
      * @param isSortedByYear сортировка по году издания книги
-     * @param limitOfBooks количество книг на странице
-     * @param page номер отображаемой страницы
-     *
+     * @param limitOfBooks   количество книг на странице
+     * @param page           номер отображаемой страницы
      * @return Список книг
      */
     public List<Book> findAll(Boolean isSortedByYear, Integer page, Integer limitOfBooks) {
@@ -88,7 +87,6 @@ public class BooksService {
      * Метод для получения экземпляра книги по её идентификационному номеру
      *
      * @param id Идентификационный номер книги
-     *
      * @return Экземпляр Книги
      */
 
@@ -105,8 +103,7 @@ public class BooksService {
     /**
      * Метод для получения экземпляра книги по её заголовку (полное совпадение)
      *
-     * @param title  Заголовок книги
-     *
+     * @param title Заголовок книги
      * @return Экземпляр книги либо NULL
      */
 
@@ -118,8 +115,7 @@ public class BooksService {
     /**
      * Метод для сохранения экземпляра книги
      *
-     * @param book  Экземпляр книги
-     *
+     * @param book Экземпляр книги
      */
     @Transactional
     public void save(Book book) {
@@ -130,9 +126,8 @@ public class BooksService {
     /**
      * Метод для обновления экземпляра книги
      *
-     * @param id Идентификационный номер книги
+     * @param id          Идентификационный номер книги
      * @param updatedBook Редактируемая книга
-     *
      */
     @Transactional
     public void update(int id, Book updatedBook) {
@@ -151,7 +146,6 @@ public class BooksService {
      * Метод для удаления экземпляра книги
      *
      * @param id Идентификационный номер книги
-     *
      */
 
     @Transactional
@@ -164,7 +158,6 @@ public class BooksService {
      * Метод для освобождения книги (сдача книги читателем в библиотеку)
      *
      * @param id Идентификационный номер книги
-     *
      */
     @Transactional
     public void makeBookFree(int id) {
@@ -176,9 +169,8 @@ public class BooksService {
     /**
      * Метод для закрепления книги за читателем
      *
-     * @param bookId Идентификационный номер книги
+     * @param bookId   Идентификационный номер книги
      * @param personId Идентификационный номер читателя
-     *
      */
     @Transactional
     public void assignPerson(int bookId, int personId) {
@@ -192,8 +184,7 @@ public class BooksService {
     /**
      * Метод для получения экземпляра книги по первоначальному совпадению в названии книги
      *
-     * @param title  Заголовок книги (первые буквы заголовка)
-     *
+     * @param title Заголовок книги (первые буквы заголовка)
      * @return Список найденных книг
      */
     public BookResponse getBookListByTitleStartingWith(String title) {
@@ -206,7 +197,6 @@ public class BooksService {
      * Метод для получения читателя, у кого находится книга в данный момент
      *
      * @param bookId Идентификационный номер книги
-     *
      * @return Экземпляр читателя или NULL
      */
     public Optional<Person> getBookOwner(int bookId) {
@@ -217,7 +207,6 @@ public class BooksService {
      * Метод для преобразования BookDTO в экземпляр книги
      *
      * @param bookDTO Объект DTO для книги
-     *
      * @return Экземпляр книги
      */
     public Book convertToBookFromDTO(BookDTO bookDTO) {
@@ -227,9 +216,8 @@ public class BooksService {
     /**
      * Метод для получения экземпляра книги
      *
-     * @param id Идентификационный номер книги
+     * @param id      Идентификационный номер книги
      * @param bookDTO Объект DTO для книги
-     *
      * @return Экземпляр книги
      */
     @Transactional
@@ -245,7 +233,6 @@ public class BooksService {
      * Метод для преобразования экземпляра Book в объект DTO
      *
      * @param book Объект экземпляр книги
-     *
      * @return DTO для книги
      */
     public BookDTO convertToDTOFromBook(Book book) {
@@ -256,9 +243,8 @@ public class BooksService {
      * Метод для поиска всех книг в библиотеке с возможностью пагинации (используется в контроллере)
      *
      * @param isSortedByYear сортировка по году издания книги
-     * @param limitOfBooks количество книг на странице
-     * @param page номер отображаемой страницы
-     *
+     * @param limitOfBooks   количество книг на странице
+     * @param page           номер отображаемой страницы
      * @return BookResponse
      */
     public BookResponse getAllBooks(Boolean isSortedByYear, Integer page, Integer limitOfBooks) {
