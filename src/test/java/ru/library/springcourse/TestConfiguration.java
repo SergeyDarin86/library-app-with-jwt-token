@@ -7,6 +7,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
+//TODO: переделать данную настройку - можно упростить подключение!!!
+
 @Configuration
 public class TestConfiguration {
 
