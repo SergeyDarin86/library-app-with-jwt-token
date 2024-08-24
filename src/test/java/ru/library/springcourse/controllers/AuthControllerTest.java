@@ -79,7 +79,7 @@ class AuthControllerTest {
     }
 
     // TODO: описать решение проблемы с SecurityContextHolder и Authentication
-    // TODO: как обойти аутентификацию
+    // TODO: как обойти аутентификацию - Возможно не описал в текстовом файле
 
     @BeforeEach
     public void initSecurityContext() {
