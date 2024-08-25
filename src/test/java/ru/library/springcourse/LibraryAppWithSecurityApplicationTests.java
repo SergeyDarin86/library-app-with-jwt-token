@@ -34,6 +34,8 @@ class LibraryAppWithSecurityApplicationTests {
 
     String token;
 
+    //генерируем jwt-токен и используем его для каждого запроса
+
     @BeforeEach
     void setUp() throws Exception {
         ResultActions resultActions = this.mockMvc
