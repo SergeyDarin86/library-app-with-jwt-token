@@ -1,1 +1,1 @@
-This App uses Spring Security framework
+This App uses Spring Security framework with jwt-token
